@@ -50,6 +50,10 @@ function TagBreakdownChart({ tasks }: TagBreakdownChartProps) {
      * but we want to show both completed and total.
      */
     return Object.values(tagCounts)
+      .map((item) => ({
+        ...item,
+        remaining: item.total - item.value,
+      }))
       .sort((a, b) => b.total - a.total)
       .slice(0, 5); // top 5 tags
   }, [tasks, t]);
@@ -81,8 +85,8 @@ function TagBreakdownChart({ tasks }: TagBreakdownChartProps) {
               width={100}
             />
             <Tooltip content={CustomTooltip} cursor={{ fill: "var(--bg-hover)", opacity: 0.4 }} />
-            <Bar dataKey="total" fill="var(--bg-secondary)" radius={[0, 4, 4, 0]} barSize={20} />
-            <Bar dataKey="value" fill="var(--color-primary)" radius={[0, 4, 4, 0]} barSize={20} />
+            <Bar dataKey="value" stackId="a" fill="var(--color-primary)" radius={[0, 0, 0, 0]} barSize={20} />
+            <Bar dataKey="remaining" stackId="a" fill="var(--bg-secondary)" radius={[0, 4, 4, 0]} barSize={20} />
           </BarChart>
         </ResponsiveContainer>
       </div>
