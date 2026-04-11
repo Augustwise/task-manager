@@ -300,6 +300,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         dueToday: "Due today",
         thisWeek: "This week",
         onTrack: "On track",
+        noTags: "Untagged",
       },
     },
     publicTask: {
@@ -570,6 +571,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         dueToday: "Сегодня",
         thisWeek: "На этой неделе",
         onTrack: "В процессе",
+        noTags: "Без тегов",
       },
     },
     publicTask: {
@@ -839,6 +841,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         dueToday: "Сьогодні",
         thisWeek: "Цього тижня",
         onTrack: "У процесі",
+        noTags: "Без тегів",
       },
     },
     publicTask: {
