@@ -13,6 +13,14 @@ function getNumber(name, fallback) {
   return Number.isNaN(parsedValue) ? fallback : parsedValue;
 }
 
+function getBoolean(name, fallback = false) {
+  const rawValue = process.env[name];
+  if (rawValue == null) {
+    return fallback;
+  }
+  return rawValue === "true" || rawValue === "1";
+}
+
 const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   serverPort: getNumber("SERVER_PORT", 3001),
@@ -23,7 +31,8 @@ const env = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     host: process.env.DB_HOST,
-    port: getNumber("DB_PORT", 1433),
+    port: getNumber("DB_PORT", 5432),
+    ssl: getBoolean("DB_SSL", false),
   },
 };
 

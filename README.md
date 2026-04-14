@@ -29,7 +29,7 @@ If you want to run the app on your computer, you will need:
 
 - Node.js
 - npm
-- MySQL
+- PostgreSQL
 
 ### 1. Install dependencies
 
