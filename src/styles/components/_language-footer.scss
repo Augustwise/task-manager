@@ -7,11 +7,19 @@
   background: palette(surface);
 
   &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: min(100%, 1200px);
+    margin: 0 auto;
+  }
+
+  &__lang {
     display: grid;
     justify-items: end;
     gap: 0.45rem;
-    width: min(100%, 1200px);
-    margin: 0 auto;
+    margin-left: auto;
   }
 
   &__label {
@@ -23,6 +31,33 @@
 
   &__switcher {
     display: inline-block;
+  }
+
+  &__logout-btn {
+    @include button-reset;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid alpha(warning, 0.35);
+    border-radius: radius(pill);
+    background: alpha(warning, 0.06);
+    color: palette(warning-soft);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      background-color timing(base),
+      border-color timing(base),
+      color timing(base);
+
+    &:hover {
+      border-color: alpha(warning, 0.6);
+      background: alpha(warning, 0.12);
+      color: palette(warning);
+    }
+
+    &:focus-visible {
+      @include focus-ring(warning);
+      border-radius: radius(pill);
+    }
   }
 
   &__field {

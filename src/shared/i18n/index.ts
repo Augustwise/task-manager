@@ -165,6 +165,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
     tasks: {
       pageTitle: "Task manager",
       deadlineCalendar: "Deadline calendar",
+      logout: "Sign out",
       stats: {
         pending: "pending",
         done: "done",
@@ -437,6 +438,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
     tasks: {
       pageTitle: "Менеджер задач",
       deadlineCalendar: "Календарь дедлайнов",
+      logout: "Выйти",
       stats: {
         pending: "активные",
         done: "выполнено",
@@ -711,6 +713,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
     tasks: {
       pageTitle: "Менеджер завдань",
       deadlineCalendar: "Календар дедлайнів",
+      logout: "Вийти",
       stats: {
         pending: "активні",
         done: "виконано",
