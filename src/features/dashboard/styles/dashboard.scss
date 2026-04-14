@@ -175,6 +175,12 @@
     &:hover {
       background-color: palette(surface-muted);
     }
+
+    &--link {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
   }
 
   &__label-container {
@@ -216,6 +222,55 @@
     padding: 2px 10px;
     border-radius: radius(pill);
     border: 1px solid palette(border-card);
+  }
+}
+
+.due-date-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: space("md");
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: space("xs");
+    color: palette(primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: space("sm");
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__back-icon {
+    flex-shrink: 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: space("md");
+    margin-bottom: space("sm");
+  }
+
+  &__title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: palette(text-strong);
+    margin: 0;
+  }
+
+  &__count {
+    font-weight: 700;
+    color: palette(text-deep);
+    background-color: palette(surface);
+    padding: 2px 10px;
+    border-radius: radius(pill);
+    border: 1px solid palette(border-card);
+    font-size: 0.95rem;
   }
 }
 

@@ -302,6 +302,10 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         onTrack: "On track",
         noTags: "Untagged",
       },
+      dueDateTasks: {
+        backToDashboard: "Back to Dashboard",
+        empty: "No tasks in this category.",
+      },
     },
     publicTask: {
       loading: "Loading shared task...",
@@ -573,6 +577,10 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         onTrack: "В процессе",
         noTags: "Без тегов",
       },
+      dueDateTasks: {
+        backToDashboard: "Назад к дашборду",
+        empty: "Нет задач в этой категории.",
+      },
     },
     publicTask: {
       loading: "Загрузка общей задачи...",
@@ -842,6 +850,10 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         thisWeek: "Цього тижня",
         onTrack: "У процесі",
         noTags: "Без тегів",
+      },
+      dueDateTasks: {
+        backToDashboard: "Назад до дашборду",
+        empty: "Немає завдань у цій категорії.",
       },
     },
     publicTask: {
