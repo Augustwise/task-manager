@@ -1,5 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const rateLimit = require("express-rate-limit");
 const { UniqueConstraintError } = require("sequelize");
 const {
   createUser,
@@ -20,7 +21,15 @@ const {
 
 const router = express.Router();
 
-router.post("/register", async (req, res) => {
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 10,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { error: "Too many attempts. Please try again in 15 minutes." },
+});
+
+router.post("/register", authLimiter, async (req, res) => {
   const { email, password } = getCredentialsFromRequest(req);
 
   if (!email || !password) {
@@ -47,7 +56,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", authLimiter, async (req, res) => {
   const { email, password } = getCredentialsFromRequest(req);
 
   if (!email || !password) {
