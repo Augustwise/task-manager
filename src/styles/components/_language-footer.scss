@@ -8,7 +8,7 @@
 
   &__content {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     gap: 1rem;
     width: min(100%, 1200px);
@@ -35,13 +35,14 @@
 
   &__logout-btn {
     @include button-reset;
-    padding: 0.3rem 0.7rem;
+    padding: 0.45rem 0.9rem;
     border: 1px solid alpha(warning, 0.35);
     border-radius: radius(pill);
     background: alpha(warning, 0.06);
     color: palette(warning-soft);
-    font-size: 0.82rem;
+    font-size: 0.9rem;
     font-weight: 600;
+    line-height: 1.2;
     cursor: pointer;
     transition:
       background-color timing(base),
