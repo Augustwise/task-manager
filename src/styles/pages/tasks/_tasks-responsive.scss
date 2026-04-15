@@ -1,0 +1,378 @@
+@use "../../abstracts" as *;
+
+@include respond-max(task) {
+  .tasks-page {
+    &__tabs {
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    &__tab {
+      min-width: 0;
+      padding: 0.5rem 0.55rem;
+      font-size: 0.8rem;
+    }
+
+    &__calendar-title-row {
+      gap: 0.6rem;
+    }
+
+    &__calendar-actions {
+      width: 100%;
+      margin-left: 0;
+    }
+
+    &__calendar-nav-icon {
+      width: 2.1rem;
+      height: 2.1rem;
+    }
+
+    &__calendar-secondary-button,
+    &__new-task-btn--calendar {
+      display: inline-flex;
+      flex: 1 1 calc(50% - 0.275rem);
+      justify-content: center;
+    }
+
+    &__calendar-weekdays {
+      gap: 0.22rem;
+    }
+
+    &__calendar-weekday {
+      padding: 0 0.05rem;
+      font-size: 0.55rem;
+    }
+
+    &__calendar-grid {
+      gap: 0.22rem;
+    }
+
+    &__calendar-board {
+      padding: 0.45rem;
+    }
+
+    &__calendar-day {
+      min-height: 64px;
+      padding: 0.28rem;
+      border-radius: 12px;
+    }
+
+    &__calendar-day-number {
+      width: 1.45rem;
+      height: 1.45rem;
+      font-size: 0.75rem;
+    }
+
+    &__calendar-task-preview {
+      display: none;
+    }
+
+    &__calendar-task-count {
+      @include pill(0.16rem, 0.38rem);
+      align-self: flex-start;
+      display: inline-flex;
+      margin-top: auto;
+      background: palette(pill-bg);
+      color: palette(pill-count-text);
+      font-size: 0.58rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+  }
+
+  .task-card {
+    &__content {
+      position: relative;
+      min-height: 4.9rem;
+      padding-right: 5.15rem;
+    }
+
+    &__header {
+      display: block;
+      margin-bottom: 0.1rem;
+    }
+
+    &__controls {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.35rem;
+      width: auto;
+      min-width: max-content;
+      padding: 0;
+      border: 0;
+      background: none;
+      box-shadow: none;
+    }
+
+    &__subtasks {
+      margin-top: 0.4rem;
+    }
+
+    &__icon-actions {
+      order: 1;
+      padding: 0.25rem;
+      border: 1px solid #e3ebf8;
+      border-radius: radius(xl);
+      background: linear-gradient(
+        180deg,
+        rgba(248, 251, 255, 0.98) 0%,
+        rgba(255, 255, 255, 0.96) 100%
+      );
+      box-shadow: 0 10px 22px rgba(30, 41, 59, 0.06);
+    }
+
+    &__action-group--share {
+      order: 2;
+      justify-content: flex-end;
+      padding: 0;
+      border: 0;
+      background: none;
+      box-shadow: none;
+    }
+
+    &__meta {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    &__meta .priority-badge {
+      order: 1;
+    }
+
+    &__meta .task-card__due-date {
+      order: 2;
+      font-size: 0.72rem;
+    }
+
+    &__meta .tag-badge {
+      order: 3;
+    }
+  }
+
+  .task-modal__subtasks-input {
+    flex-direction: column;
+  }
+
+  .task-modal__subtask-add {
+    width: 100%;
+  }
+}
+
+@include respond-min(task) {
+  .tasks-page {
+    padding: 1.75rem 1.5rem 4rem;
+
+    &__title {
+      font-size: 1.75rem;
+    }
+
+    &__stat-value {
+      font-size: 2rem;
+    }
+
+    &__stats {
+      gap: 2rem;
+    }
+
+    &__search-wrapper {
+      order: 1;
+      flex: 1;
+      flex-basis: auto;
+      max-width: 220px;
+    }
+
+    &__select-group {
+      order: 2;
+      flex: 0 0 150px;
+
+      &--sort {
+        flex-basis: 170px;
+      }
+
+      &--priority {
+        flex-basis: 155px;
+      }
+
+      &--status {
+        flex-basis: 195px;
+      }
+    }
+
+    &__new-task-btn {
+      order: 3;
+      flex-basis: auto;
+      margin-left: auto;
+    }
+  }
+
+  .task-card {
+    gap: 0.55rem 0.8rem;
+    padding: 1rem 1.1rem 0.95rem 3.2rem;
+
+    &__header {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: flex-start;
+      gap: 0.7rem;
+    }
+
+    &__controls {
+      width: auto;
+      justify-self: end;
+      align-self: start;
+    }
+
+    &__action-group {
+      flex-wrap: nowrap;
+    }
+
+    &__content {
+      min-width: min(100%, 420px);
+    }
+
+    &__meta {
+      gap: 0.65rem;
+    }
+  }
+
+  .task-modal__split-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@include respond-between(task, task-wide) {
+  .tasks-page {
+    &__toolbar {
+      align-items: stretch;
+    }
+
+    &__calendar-board {
+      padding: 0.75rem;
+    }
+
+    &__calendar-grid {
+      gap: 0.3rem;
+    }
+
+    &__calendar-day {
+      min-height: 82px;
+      padding: 0.4rem;
+    }
+
+    &__calendar-day-number {
+      width: 1.7rem;
+      height: 1.7rem;
+      font-size: 0.78rem;
+    }
+
+    &__calendar-task-preview {
+      display: none;
+    }
+
+    &__calendar-task-count {
+      @include pill(0.2rem, 0.45rem);
+      align-self: flex-start;
+      display: inline-flex;
+      margin-top: auto;
+      background: palette(pill-bg);
+      color: palette(pill-count-text);
+      font-size: 0.62rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    &__calendar-actions {
+      width: 100%;
+      justify-content: flex-start;
+      margin-left: 0;
+    }
+
+    &__search-wrapper {
+      order: 1;
+      flex: 1 1 100%;
+      max-width: none;
+    }
+
+    &__select-group {
+      flex: 1 1 calc(50% - 0.25rem);
+      min-width: 0;
+
+      &--sort {
+        order: 2;
+        flex-basis: calc(50% - 0.25rem);
+      }
+
+      &--priority {
+        order: 3;
+        flex-basis: calc(50% - 0.25rem);
+      }
+
+      &--status {
+        order: 4;
+        flex: 1 1 100%;
+      }
+    }
+
+    &__new-task-btn {
+      order: 5;
+      flex-basis: auto;
+      margin-left: auto;
+    }
+  }
+}
+
+@include respond-min(task-wide) {
+  .task-card {
+    &__header {
+      gap: 0.85rem;
+    }
+
+    &__title {
+      display: block;
+      line-height: 1.35;
+      overflow-wrap: normal;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+@include respond-min(desktop) {
+  .tasks-page {
+    &__calendar-layout {
+      grid-template-columns: minmax(0, 1.65fr) minmax(320px, 0.95fr);
+      align-items: start;
+    }
+
+    &__calendar-panel {
+      position: sticky;
+      top: 1rem;
+    }
+  }
+}
+
+@include reduced-motion {
+  .tasks-page__calendar-day,
+  .tasks-page__calendar-nav-icon,
+  .tasks-page__calendar-secondary-button,
+  .tasks-page__new-task-btn,
+  .tasks-page__tab,
+  .task-card,
+  .task-card__action img {
+    transition: none;
+  }
+
+  .task-card::after {
+    animation: none;
+  }
+
+  .task-card:hover {
+    transform: none;
+  }
+}

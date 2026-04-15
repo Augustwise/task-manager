@@ -1,0 +1,25 @@
+@use "sass:map";
+@use "../../abstracts" as *;
+
+.priority-badge {
+  @include pill(0.22rem, 0.65rem);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-align: center;
+  text-transform: uppercase;
+
+  @each $level, $theme in $priority-themes {
+    &--#{$level} {
+      background: map.get($theme, solid-bg);
+      color: map.get($theme, solid-text);
+    }
+  }
+}
+
+.tag-badge {
+  @include pill(0.22rem, 0.75rem);
+  border: 1.5px solid palette(tag-border);
+  color: palette(tag-text);
+  font-size: 0.72rem;
+}

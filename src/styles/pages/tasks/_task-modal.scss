@@ -1,0 +1,73 @@
+@use "../../abstracts" as *;
+
+.task-modal {
+  &__form {
+    display: block;
+  }
+
+  &__fields,
+  &__subtasks {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__fields {
+    gap: 1rem;
+  }
+
+  &__split-fields {
+    display: grid;
+    gap: 1rem;
+  }
+
+  &__subtasks {
+    gap: 0.5rem;
+  }
+
+  &__subtasks-label {
+    color: palette(text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  &__subtasks-input {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  &__subtask-add {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  &__subtask-list {
+    @include list-reset;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__subtask-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: radius(md);
+    background: alpha(primary, 0.06);
+  }
+
+  &__subtask-title {
+    flex: 1;
+    font-size: 0.875rem;
+  }
+
+  &__subtask-remove {
+    padding: 0.25rem;
+  }
+
+  &__delete-copy {
+    strong {
+      color: palette(text);
+    }
+  }
+}

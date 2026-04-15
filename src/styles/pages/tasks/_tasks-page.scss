@@ -1,0 +1,515 @@
+@use "../../abstracts" as *;
+
+.tasks-page {
+  max-width: 1360px;
+  margin: 0 auto;
+  min-width: 0;
+  padding: 1.25rem 0.85rem 3rem;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+
+  &__title {
+    margin: 0;
+    color: palette(text);
+    font-size: 1.3rem;
+    font-weight: 700;
+
+    span {
+      color: palette(text-muted);
+      font-weight: 400;
+    }
+  }
+
+  &__stats {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  &__stat {
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  &__stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+
+    @each $name, $tone in $task-stat-colors {
+      &--#{$name} {
+        color: $tone;
+      }
+    }
+  }
+
+  &__stat-label {
+    display: block;
+    margin-top: 0.1rem;
+    color: palette(text-muted);
+    font-size: 0.68rem;
+    text-transform: lowercase;
+  }
+
+  &__header-divider {
+    margin: 0 0 1.25rem;
+    border: 0;
+    border-top: 1px solid palette(border);
+  }
+
+  &__tabs {
+    display: inline-flex;
+    gap: 0.35rem;
+    margin-bottom: 1.25rem;
+    padding: 0.25rem;
+    border: 1px solid palette(border-muted);
+    border-radius: radius(pill);
+    background: linear-gradient(180deg, #fbfdff 0%, #f2f7fd 100%);
+  }
+
+  &__tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 0.55rem 0.95rem;
+    border-radius: radius(pill);
+    color: palette(text-soft);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    @include interactive-lift(-1px, floating);
+
+    &:hover {
+      background: alpha(focus, 0.08);
+      color: palette(text-strong);
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+
+    &--active {
+      background: linear-gradient(135deg, palette(focus) 0%, palette(focus-strong) 100%);
+      color: palette(surface);
+      box-shadow: shadow(floating);
+    }
+  }
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  &__search-wrapper {
+    order: 1;
+    flex-basis: 100%;
+  }
+
+  &__select-group {
+    order: 2;
+    flex: 1 1 140px;
+    min-width: 0;
+
+    &--sort {
+      flex-basis: 150px;
+    }
+
+    &--status {
+      flex-basis: 160px;
+    }
+  }
+
+  &__select-control {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__new-task-btn {
+    @include button-reset;
+    order: 3;
+    flex-basis: 100%;
+    padding: 0.55rem 1.4rem;
+    border-radius: 20px;
+    background: palette(focus);
+    color: palette(surface);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    @include interactive-lift(-1px, floating);
+
+    &:hover {
+      background: #2178e8;
+    }
+
+    &:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: none;
+    }
+  }
+
+  &__col-headers {
+    display: none;
+  }
+
+  &__section-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.4rem 0 0.6rem;
+    color: palette(text);
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: palette(border);
+    }
+  }
+
+  &__empty-state {
+    margin-top: 0.5rem;
+    padding: 1rem;
+    border: 1px dashed palette(border);
+    border-radius: radius(card);
+    background: palette(surface-muted);
+    color: palette(text-muted);
+    text-align: center;
+  }
+
+  &__loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 0 1.5rem;
+  }
+
+  &__calendar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  &__calendar-controls {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  &__calendar-heading {
+    flex: 1 1 260px;
+    min-width: 0;
+  }
+
+  &__calendar-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__calendar-title {
+    margin: 0;
+    color: palette(text);
+    font-size: 1.2rem;
+  }
+
+  &__calendar-subtitle {
+    margin: 0.35rem 0 0;
+    color: palette(text-muted);
+    font-size: 0.88rem;
+  }
+
+  &__calendar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+
+  &__calendar-month-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+    padding: 0.25rem;
+    border: 1px solid palette(border-light);
+    border-radius: radius(pill);
+    background: linear-gradient(180deg, #fbfdff 0%, #f2f7fd 100%);
+    box-shadow: 0 10px 20px rgba(58, 142, 246, 0.08);
+  }
+
+  &__calendar-nav-icon,
+  &__calendar-secondary-button {
+    @include button-reset;
+    cursor: pointer;
+    @include interactive-lift(-1px, floating);
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+  }
+
+  &__calendar-nav-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: radius(pill);
+    color: palette(text-deep);
+
+    svg {
+      width: 1.05rem;
+      height: 1.05rem;
+    }
+
+    &:hover {
+      background: alpha(focus, 0.08);
+      color: palette(focus-strong);
+    }
+  }
+
+  &__calendar-secondary-button {
+    padding: 0.55rem 1rem;
+    border: 1px solid palette(border-light);
+    border-radius: radius(pill);
+    background: palette(surface);
+    color: palette(text-deep);
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    &:hover {
+      border-color: #9fc1f2;
+      background: #f4f8ff;
+    }
+  }
+
+  &__new-task-btn--calendar {
+    flex-basis: auto;
+    margin-left: 0;
+  }
+
+  &__calendar-layout {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  &__calendar-board,
+  &__calendar-panel {
+    min-width: 0;
+    @include panel-surface;
+  }
+
+  &__calendar-board {
+    padding: 0.9rem;
+  }
+
+  &__calendar-swipe-surface {
+    touch-action: pan-y;
+  }
+
+  &__calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.45rem;
+    margin-bottom: 0.45rem;
+  }
+
+  &__calendar-weekday {
+    padding: 0;
+    color: palette(text-subtle);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  &__calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.45rem;
+    min-width: 0;
+  }
+
+  &__calendar-day {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 0;
+    min-height: 112px;
+    padding: 0.55rem;
+    border: 1px solid palette(border-card);
+    border-radius: radius(lg);
+    background: palette(surface);
+    cursor: pointer;
+    overflow: hidden;
+    text-align: left;
+    @include interactive-lift(-1px, floating);
+
+    &:hover {
+      border-color: #aac7f7;
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+
+    &--outside {
+      background: palette(surface-quiet);
+      color: palette(day-muted);
+    }
+
+    &--today {
+      border-color: #8bb8f7;
+
+      .tasks-page__calendar-day-number {
+        background: alpha(focus, 0.12);
+      }
+    }
+
+    &--selected {
+      border-color: palette(focus);
+      background: linear-gradient(180deg, #f6faff 0%, #eef5ff 100%);
+      box-shadow: shadow(panel-hover);
+    }
+
+    &--has-tasks .tasks-page__calendar-day-number {
+      color: palette(title-accent);
+    }
+  }
+
+  &__calendar-day-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: radius(pill);
+    color: palette(text);
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  &__calendar-day-content,
+  &__calendar-task-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+
+  &__calendar-day-content {
+    overflow: hidden;
+  }
+
+  &__calendar-task-pill {
+    display: block;
+    padding: 0.3rem 0.45rem;
+    border-radius: radius(card);
+    background: palette(pill-bg);
+    color: palette(pill-text);
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--completed {
+      background: palette(completed-pill-bg);
+      color: palette(completed-pill-text);
+      text-decoration: line-through;
+    }
+  }
+
+  &__calendar-task-more {
+    color: palette(calendar-more);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  &__calendar-task-count {
+    display: none;
+  }
+
+  &__calendar-panel {
+    padding: 1rem;
+  }
+
+  &__calendar-panel-header {
+    margin-bottom: 0.9rem;
+  }
+
+  &__calendar-panel-label {
+    margin: 0 0 0.2rem;
+    color: palette(text-subtle);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &__calendar-panel-title {
+    margin: 0;
+    color: palette(text);
+    font-size: 1.05rem;
+  }
+
+  &__calendar-panel-count {
+    margin: 0.25rem 0 0;
+    color: palette(text-muted);
+    font-size: 0.82rem;
+  }
+
+  &__calendar-task-list .task-card:last-child {
+    margin-bottom: 0;
+  }
+
+  &__calendar-empty-state {
+    padding: 1rem;
+    border: 1px dashed palette(calendar-empty-border);
+    border-radius: radius(lg);
+    background: #f8fbff;
+    color: palette(calendar-empty-text);
+    text-align: center;
+  }
+
+  &__progress {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  &__progress-label {
+    color: palette(text-muted);
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  &__progress-bar {
+    @include progress(5px, palette(progress-track), palette(progress-fill), 80px);
+  }
+}
