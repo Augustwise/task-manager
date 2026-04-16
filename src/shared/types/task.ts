@@ -1,5 +1,7 @@
 export type Priority = "high" | "medium" | "low";
 
+export type Recurrence = "none" | "daily" | "weekly" | "monthly";
+
 export interface SubtaskDto {
   id: number;
   title: string;
@@ -16,6 +18,8 @@ export interface TaskDto {
   tag: string;
   completed: boolean;
   shareToken: string | null;
+  recurrence: Recurrence;
+  recurrenceEndDate: string;
   subtasks: SubtaskDto[];
 }
 
@@ -25,6 +29,8 @@ export interface CreateTaskDto {
   priority: Priority;
   dueDate: string;
   tag: string;
+  recurrence: Recurrence;
+  recurrenceEndDate: string;
   subtasks?: string[];
 }
 

@@ -156,6 +156,8 @@ export function useTaskMutations({
           priority: trimmedValues.priority,
           dueDate: trimmedValues.dueDate,
           tag: trimmedValues.tag,
+          recurrence: trimmedValues.recurrence,
+          recurrenceEndDate: trimmedValues.recurrenceEndDate,
           subtasks: updatedSubtasks,
         });
 
@@ -179,9 +181,14 @@ export function useTaskMutations({
       return;
     }
 
-    setTasks((currentTasks) =>
-      currentTasks.map((task) => (task.id === taskId ? { ...task, completed } : task)),
-    );
+    const isRecurringCompletion =
+      completed && previousTask.recurrence !== "none" && Boolean(previousTask.dueDate);
+
+    if (!isRecurringCompletion) {
+      setTasks((currentTasks) =>
+        currentTasks.map((task) => (task.id === taskId ? { ...task, completed } : task)),
+      );
+    }
     addPendingTaskIds([taskId]);
 
     try {
@@ -310,6 +317,8 @@ export function useTaskMutations({
           priority,
           dueDate: task.dueDate,
           tag: task.tag,
+          recurrence: task.recurrence,
+          recurrenceEndDate: task.recurrenceEndDate,
           subtasks: task.subtasks.map((subtask) => ({
             id: subtask.id,
             title: subtask.title,

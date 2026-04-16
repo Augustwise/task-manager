@@ -87,6 +87,8 @@ router.post("/tasks", async (req, res) => {
       priority: result.value.priority,
       dueDate: result.value.dueDate,
       tag: result.value.tag,
+      recurrence: result.value.recurrence,
+      recurrenceEndDate: result.value.recurrenceEndDate,
       subtasks,
     });
 

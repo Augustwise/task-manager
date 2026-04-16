@@ -1,5 +1,6 @@
 const Task = require("../models/Task");
 const Subtask = require("../models/Subtask");
+const { getNextOccurrence } = require("../utils/recurrence");
 
 function findTasksByUserId(userId) {
   return Task.findAll({
@@ -13,7 +14,17 @@ function findTasksByUserId(userId) {
   });
 }
 
-async function createTask({ userId, title, description, priority, dueDate, tag, subtasks = [] }) {
+async function createTask({
+  userId,
+  title,
+  description,
+  priority,
+  dueDate,
+  tag,
+  recurrence = "none",
+  recurrenceEndDate = null,
+  subtasks = [],
+}) {
   const task = await Task.create({
     user_id: userId,
     title,
@@ -21,6 +32,8 @@ async function createTask({ userId, title, description, priority, dueDate, tag, 
     priority,
     due_date: dueDate,
     tag,
+    recurrence,
+    recurrence_end_date: recurrenceEndDate,
   });
 
   if (subtasks.length > 0) {
@@ -32,12 +45,21 @@ async function createTask({ userId, title, description, priority, dueDate, tag, 
   return findTaskByIdForUser(task.id, userId);
 }
 
-async function updateTask(task, { title, description, priority, dueDate, tag, subtasks }) {
+async function updateTask(
+  task,
+  { title, description, priority, dueDate, tag, recurrence, recurrenceEndDate, subtasks },
+) {
   task.title = title;
   task.description = description;
   task.priority = priority;
   task.due_date = dueDate;
   task.tag = tag;
+  if (recurrence !== undefined) {
+    task.recurrence = recurrence;
+  }
+  if (recurrenceEndDate !== undefined) {
+    task.recurrence_end_date = recurrenceEndDate;
+  }
   await task.save();
 
   if (subtasks !== undefined) {
@@ -93,6 +115,29 @@ function findTaskByShareTokenForOtherTask(shareToken, taskId) {
 }
 
 async function updateTaskCompletion(task, completed) {
+  const recurrence = task.recurrence ?? "none";
+  const endDate = task.recurrence_end_date;
+  const dueDate = task.due_date;
+
+  if (completed && recurrence !== "none" && dueDate) {
+    const nextDueDate = getNextOccurrence(dueDate, recurrence);
+
+    if (nextDueDate && (!endDate || nextDueDate <= endDate)) {
+      task.due_date = nextDueDate;
+      task.completed = false;
+
+      if (task.subtasks && task.subtasks.length > 0) {
+        await Subtask.update(
+          { completed: false },
+          { where: { task_id: task.id } },
+        );
+      }
+
+      await task.save();
+      return findTaskByIdForUser(task.id, task.user_id);
+    }
+  }
+
   task.completed = completed;
   await task.save();
   return findTaskByIdForUser(task.id, task.user_id);

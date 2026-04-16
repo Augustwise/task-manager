@@ -10,6 +10,8 @@ function getTaskFormValues(task: TaskDto): CreateTaskDto {
     priority: task.priority,
     dueDate: task.dueDate,
     tag: task.tag,
+    recurrence: task.recurrence ?? "none",
+    recurrenceEndDate: task.recurrenceEndDate ?? "",
     subtasks: task.subtasks.map((subtask) => subtask.title),
   };
 }

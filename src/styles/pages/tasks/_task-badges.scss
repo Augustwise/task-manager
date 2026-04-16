@@ -23,3 +23,28 @@
   color: palette(tag-text);
   font-size: 0.72rem;
 }
+
+.recurrence-badge {
+  @include pill(0.22rem, 0.7rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1.5px solid #b7d7f5;
+  background: #eef5ff;
+  color: #1a65d6;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+
+  &__icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    text-transform: capitalize;
+  }
+}

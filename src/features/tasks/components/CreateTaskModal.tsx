@@ -12,7 +12,7 @@ import {
 import closeIcon from "../../../assets/icon-close.svg";
 import { type ChangeEvent, type KeyboardEvent, useId, useRef, useState } from "react";
 import { useI18n } from "../../../shared/i18n/useI18n";
-import type { CreateTaskDto } from "../../../shared/types";
+import type { CreateTaskDto, Recurrence } from "../../../shared/types";
 import type { CreateTaskModalProps } from "../types/components";
 
 function CreateTaskModal({
@@ -35,6 +35,15 @@ function CreateTaskModal({
     { value: "medium", label: t("common.priorityLevels.medium") },
     { value: "low", label: t("common.priorityLevels.low") },
   ] satisfies ReadonlyArray<{ label: string; value: CreateTaskDto["priority"] }>;
+  const recurrenceOptions = [
+    { value: "none", label: t("tasks.modal.recurrenceOptions.none") },
+    { value: "daily", label: t("tasks.modal.recurrenceOptions.daily") },
+    { value: "weekly", label: t("tasks.modal.recurrenceOptions.weekly") },
+    { value: "monthly", label: t("tasks.modal.recurrenceOptions.monthly") },
+  ] satisfies ReadonlyArray<{ label: string; value: Recurrence }>;
+  const recurrenceValue: Recurrence = formValues.recurrence ?? "none";
+  const isRecurring = recurrenceValue !== "none";
+  const recurrenceEndMinDate = formValues.dueDate || undefined;
   const modalTitle = mode === "create" ? t("tasks.modal.newTitle") : t("tasks.modal.editTitle");
   const closeLabel = mode === "create" ? t("tasks.modal.closeNew") : t("tasks.modal.closeEdit");
   let submitLabel = t("tasks.modal.saving");
@@ -187,6 +196,50 @@ function CreateTaskModal({
               value={formValues.tag}
               onChange={handleChange("tag")}
             />
+
+            <div className="task-modal__split-fields">
+              <TextField
+                disabled={isSubmitting}
+                error={Boolean(fieldErrors.recurrence)}
+                fullWidth
+                helperText={fieldErrors.recurrence ?? t("tasks.modal.recurrenceHint")}
+                id="create-task-recurrence"
+                label={t("tasks.modal.recurrenceLabel")}
+                select
+                value={recurrenceValue}
+                onChange={(event) =>
+                  onFieldChange("recurrence", event.target.value as Recurrence)
+                }
+              >
+                {recurrenceOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <TextField
+                disabled={isSubmitting || !isRecurring}
+                error={Boolean(fieldErrors.recurrenceEndDate)}
+                fullWidth
+                helperText={
+                  fieldErrors.recurrenceEndDate ?? t("tasks.modal.recurrenceEndHint")
+                }
+                id="create-task-recurrence-end-date"
+                label={t("tasks.modal.recurrenceEndLabel")}
+                type="date"
+                value={isRecurring ? formValues.recurrenceEndDate : ""}
+                onChange={handleChange("recurrenceEndDate")}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                  htmlInput: {
+                    min: recurrenceEndMinDate,
+                  },
+                }}
+              />
+            </div>
 
             <div className="task-modal__subtasks">
               <div className="task-modal__subtasks-label">{t("tasks.modal.subtasks")}</div>

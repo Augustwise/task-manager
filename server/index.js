@@ -4,10 +4,12 @@ require("./models/Subtask");
 const { env } = require("./config/env");
 const { createSessionStore } = require("./config/session");
 const { createApp } = require("./app");
+const { runMigrations } = require("./migrations");
 
 sequelize
   .authenticate()
   .then(() => sequelize.sync())
+  .then(() => runMigrations(sequelize))
   .then(() => {
     const sessionStore = createSessionStore(sequelize);
 

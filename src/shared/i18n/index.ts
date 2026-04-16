@@ -219,6 +219,13 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
           }`,
         moreCount: (params) => `+${getCount(params)} more`,
         noDescription: "No description",
+        recurringTitle: (params) => `Repeats ${getText(params, "label").toLowerCase()}`,
+      },
+      recurrence: {
+        none: "Does not repeat",
+        daily: "Daily",
+        weekly: "Weekly",
+        monthly: "Monthly",
       },
       modal: {
         newTitle: "New task",
@@ -231,6 +238,16 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         subtasks: "Subtasks",
         addSubtask: "Add subtask",
         removeSubtask: (params) => `Remove subtask "${getText(params, "title")}"`,
+        recurrenceLabel: "Repeat",
+        recurrenceHint: "Recurring tasks roll forward when completed.",
+        recurrenceEndLabel: "Repeat until (optional)",
+        recurrenceEndHint: "Leave empty to repeat indefinitely.",
+        recurrenceOptions: {
+          none: "Does not repeat",
+          daily: "Daily",
+          weekly: "Weekly",
+          monthly: "Monthly",
+        },
       },
       delete: {
         title: "Delete task?",
@@ -320,6 +337,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       titleRequired: "Title is required.",
       priorityRequired: "Priority is required.",
       dueDatePast: "Due date cannot be in the past.",
+      recurrenceRequiresDueDate: "Recurring tasks require a due date.",
+      recurrenceEndBeforeDueDate: "Repeat-until date cannot be before the due date.",
     },
   },
   ru: {
@@ -495,6 +514,14 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
           }`,
         moreCount: (params) => `+еще ${getCount(params)}`,
         noDescription: "Нет описания",
+        recurringTitle: (params) =>
+          `Повторяется: ${getText(params, "label").toLowerCase()}`,
+      },
+      recurrence: {
+        none: "Не повторяется",
+        daily: "Ежедневно",
+        weekly: "Еженедельно",
+        monthly: "Ежемесячно",
       },
       modal: {
         newTitle: "Новая задача",
@@ -507,6 +534,17 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         subtasks: "Подзадачи",
         addSubtask: "Добавить подзадачу",
         removeSubtask: (params) => `Удалить подзадачу "${getText(params, "title")}"`,
+        recurrenceLabel: "Повтор",
+        recurrenceHint:
+          "Повторяющиеся задачи автоматически переносятся на следующую дату после завершения.",
+        recurrenceEndLabel: "Повторять до (необязательно)",
+        recurrenceEndHint: "Оставьте пустым, чтобы повторять без ограничения.",
+        recurrenceOptions: {
+          none: "Не повторяется",
+          daily: "Ежедневно",
+          weekly: "Еженедельно",
+          monthly: "Ежемесячно",
+        },
       },
       delete: {
         title: "Удалить задачу?",
@@ -597,6 +635,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       titleRequired: "Название обязательно.",
       priorityRequired: "Приоритет обязателен.",
       dueDatePast: "Срок не может быть в прошлом.",
+      recurrenceRequiresDueDate: "Для повторяющихся задач необходим срок.",
+      recurrenceEndBeforeDueDate: "Дата окончания повтора не может быть раньше срока.",
     },
   },
   uk: {
@@ -771,6 +811,14 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
           }`,
         moreCount: (params) => `+ще ${getCount(params)}`,
         noDescription: "Без опису",
+        recurringTitle: (params) =>
+          `Повторюється: ${getText(params, "label").toLowerCase()}`,
+      },
+      recurrence: {
+        none: "Не повторюється",
+        daily: "Щодня",
+        weekly: "Щотижня",
+        monthly: "Щомісяця",
       },
       modal: {
         newTitle: "Нове завдання",
@@ -783,6 +831,17 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         subtasks: "Підзавдання",
         addSubtask: "Додати підзавдання",
         removeSubtask: (params) => `Видалити підзавдання "${getText(params, "title")}"`,
+        recurrenceLabel: "Повторення",
+        recurrenceHint:
+          "Повторювані завдання автоматично переносяться на наступну дату після завершення.",
+        recurrenceEndLabel: "Повторювати до (необов'язково)",
+        recurrenceEndHint: "Залиште порожнім, щоб повторювати без обмеження.",
+        recurrenceOptions: {
+          none: "Не повторюється",
+          daily: "Щодня",
+          weekly: "Щотижня",
+          monthly: "Щомісяця",
+        },
       },
       delete: {
         title: "Видалити завдання?",
@@ -873,6 +932,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       titleRequired: "Назва є обов'язковою.",
       priorityRequired: "Пріоритет є обов'язковим.",
       dueDatePast: "Термін не може бути в минулому.",
+      recurrenceRequiresDueDate: "Для повторюваних завдань потрібен термін.",
+      recurrenceEndBeforeDueDate: "Дата завершення повторення не може бути раніше терміну.",
     },
   },
 };

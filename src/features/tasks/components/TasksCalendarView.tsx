@@ -16,6 +16,7 @@ import {
   isSameCalendarMonth,
   toIsoDate,
 } from "../lib/calendarDate";
+import { getTaskOccurrencesInRange } from "../lib/recurrence";
 import type { TasksCalendarViewProps } from "../types/components";
 import type { CalendarMonth } from "../types/calendar";
 
@@ -59,17 +60,23 @@ function sortTasksForCalendar(tasks: TaskDto[]): TaskDto[] {
   });
 }
 
-function getTasksByDate(tasks: TaskDto[]): Map<string, TaskDto[]> {
+function getTasksByDate(
+  tasks: TaskDto[],
+  visibleMonth: CalendarMonth,
+): Map<string, TaskDto[]> {
   const groupedTasks = new Map<string, TaskDto[]>();
+  const grid = getMonthGrid(visibleMonth);
+  const rangeStart = toIsoDate(grid[0]);
+  const rangeEnd = toIsoDate(grid[grid.length - 1]);
 
   tasks.forEach((task) => {
-    if (!task.dueDate) {
-      return;
-    }
+    const occurrences = getTaskOccurrencesInRange(task, rangeStart, rangeEnd);
 
-    const currentTasks = groupedTasks.get(task.dueDate) ?? [];
-    currentTasks.push(task);
-    groupedTasks.set(task.dueDate, currentTasks);
+    occurrences.forEach((isoDate) => {
+      const currentTasks = groupedTasks.get(isoDate) ?? [];
+      currentTasks.push(task);
+      groupedTasks.set(isoDate, currentTasks);
+    });
   });
 
   groupedTasks.forEach((dayTasks, isoDate) => {
@@ -84,11 +91,10 @@ function TasksCalendarView({ model }: TasksCalendarViewProps) {
   const todayParts = getTodayParts();
   const todayIsoDate = getTodayIsoDate();
   const todayMonth = getCalendarMonth(todayParts);
-  const tasksByDate = getTasksByDate(model.tasks);
-  const dueDates = [...tasksByDate.keys()];
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const [visibleMonth, setVisibleMonth] = useState<CalendarMonth>(todayMonth);
   const [selectedDate, setSelectedDate] = useState(() => todayIsoDate);
+  const tasksByDate = getTasksByDate(model.tasks, visibleMonth);
   const weekdayLabels = getWeekdayLabels(locale);
 
   const calendarDays = getMonthGrid(visibleMonth).map((parts) => {
@@ -133,7 +139,8 @@ function TasksCalendarView({ model }: TasksCalendarViewProps) {
       return;
     }
 
-    setSelectedDate(getFirstSelectableDate(nextMonth, dueDates));
+    const nextMonthDueDates = [...getTasksByDate(model.tasks, nextMonth).keys()];
+    setSelectedDate(getFirstSelectableDate(nextMonth, nextMonthDueDates));
   }
 
   function handleDaySelect(isoDate: string, year: number, month: number) {

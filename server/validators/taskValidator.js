@@ -1,4 +1,5 @@
 const ALLOWED_PRIORITIES = new Set(["high", "medium", "low"]);
+const ALLOWED_RECURRENCES = new Set(["none", "daily", "weekly", "monthly"]);
 const DUE_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 function validateCreateTaskPayload(payload) {
@@ -8,6 +9,12 @@ function validateCreateTaskPayload(payload) {
   const priority = payload?.priority;
   const dueDate = typeof payload?.dueDate === "string" ? payload.dueDate.trim() : "";
   const tag = typeof payload?.tag === "string" ? payload.tag.trim() : "";
+  const recurrence =
+    typeof payload?.recurrence === "string" && payload.recurrence.trim().length > 0
+      ? payload.recurrence.trim()
+      : "none";
+  const recurrenceEndDate =
+    typeof payload?.recurrenceEndDate === "string" ? payload.recurrenceEndDate.trim() : "";
   const today = new Date().toISOString().slice(0, 10);
 
   if (!title) {
@@ -26,6 +33,26 @@ function validateCreateTaskPayload(payload) {
     return { error: "Due date cannot be in the past" };
   }
 
+  if (!ALLOWED_RECURRENCES.has(recurrence)) {
+    return { error: "Recurrence must be none, daily, weekly, or monthly" };
+  }
+
+  if (recurrence !== "none" && !dueDate) {
+    return { error: "Recurring tasks require a due date" };
+  }
+
+  if (recurrenceEndDate && !DUE_DATE_PATTERN.test(recurrenceEndDate)) {
+    return { error: "Recurrence end date must use YYYY-MM-DD format" };
+  }
+
+  if (recurrence === "none" && recurrenceEndDate) {
+    return { error: "Recurrence end date requires a recurrence" };
+  }
+
+  if (recurrence !== "none" && recurrenceEndDate && dueDate && recurrenceEndDate < dueDate) {
+    return { error: "Recurrence end date cannot be before the due date" };
+  }
+
   return {
     value: {
       title,
@@ -33,6 +60,8 @@ function validateCreateTaskPayload(payload) {
       priority,
       dueDate: dueDate || null,
       tag: tag || null,
+      recurrence,
+      recurrenceEndDate: recurrence === "none" ? null : recurrenceEndDate || null,
     },
   };
 }

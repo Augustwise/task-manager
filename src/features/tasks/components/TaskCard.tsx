@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { Checkbox } from "@mui/material";
 import editIcon from "../../../assets/icon-edit.svg";
+import recurrenceIcon from "../../../assets/icon-recurrence.svg";
 import sharePrivateIcon from "../../../assets/icon-share-private.svg";
 import sharePublicIcon from "../../../assets/icon-share-public.svg";
 import trashIcon from "../../../assets/icon-trash.svg";
@@ -72,6 +73,7 @@ function TaskCard({
   const hasDueDate = task.dueDate.trim().length > 0;
   const hasTag = task.tag.trim().length > 0;
   const isShared = task.shareToken !== null;
+  const isRecurring = (task.recurrence ?? "none") !== "none";
   const { t, language } = useI18n();
   const isSelectionMode = checkboxMode === "select";
   const checkboxChecked = isSelectionMode ? isSelected : task.completed;
@@ -240,6 +242,25 @@ function TaskCard({
           </span>
         ) : null}
         {hasTag ? <span className="tag-badge">{task.tag}</span> : null}
+        {isRecurring ? (
+          <span
+            className="recurrence-badge"
+            title={t("tasks.card.recurringTitle", {
+              label: t(`tasks.recurrence.${task.recurrence}`),
+            })}
+          >
+            <img
+              src={recurrenceIcon}
+              alt=""
+              width="14"
+              height="14"
+              className="recurrence-badge__icon"
+            />
+            <span className="recurrence-badge__label">
+              {t(`tasks.recurrence.${task.recurrence}`)}
+            </span>
+          </span>
+        ) : null}
       </div>
     </div>
   );

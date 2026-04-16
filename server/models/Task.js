@@ -46,6 +46,18 @@ const Task = sequelize.define(
       type: DataTypes.STRING(64),
       allowNull: true,
     },
+    recurrence: {
+      type: DataTypes.STRING(8),
+      allowNull: false,
+      defaultValue: "none",
+      validate: {
+        isIn: [["none", "daily", "weekly", "monthly"]],
+      },
+    },
+    recurrence_end_date: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
   },
   {
     tableName: "tasks",
