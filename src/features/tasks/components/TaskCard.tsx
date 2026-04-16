@@ -5,8 +5,26 @@ import sharePrivateIcon from "../../../assets/icon-share-private.svg";
 import sharePublicIcon from "../../../assets/icon-share-public.svg";
 import trashIcon from "../../../assets/icon-trash.svg";
 import { useI18n } from "../../../shared/i18n/useI18n";
+import type { SupportedLanguage } from "../../../shared/i18n";
 import { getTodayParts, parseIsoDate } from "../lib/calendarDate";
 import type { TaskCardProps } from "../types/components";
+
+function formatDueDate(dateStr: string, language: SupportedLanguage): string {
+  if (language === "en") {
+    return dateStr;
+  }
+
+  const parts = parseIsoDate(dateStr);
+
+  if (!parts) {
+    return dateStr;
+  }
+
+  const day = parts.day.toString().padStart(2, "0");
+  const month = parts.month.toString().padStart(2, "0");
+
+  return `${day}.${month}.${parts.year}`;
+}
 
 function dueDateClass(dateStr: string): string {
   if (!dateStr) {
@@ -54,7 +72,7 @@ function TaskCard({
   const hasDueDate = task.dueDate.trim().length > 0;
   const hasTag = task.tag.trim().length > 0;
   const isShared = task.shareToken !== null;
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const isSelectionMode = checkboxMode === "select";
   const checkboxChecked = isSelectionMode ? isSelected : task.completed;
   const shareActionLabel = isShared
@@ -218,7 +236,7 @@ function TaskCard({
               task.completed ? "task-card__due-date--completed" : dueDateClass(task.dueDate),
             )}
           >
-            {task.dueDate}
+            {formatDueDate(task.dueDate, language)}
           </span>
         ) : null}
         {hasTag ? <span className="tag-badge">{task.tag}</span> : null}
