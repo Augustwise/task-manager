@@ -1,4 +1,5 @@
 import { Alert, Snackbar } from "@mui/material";
+import { useEffect, useEffectEvent } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import loadingSpinnerIcon from "../assets/tasks-loading-spinner.svg";
 import CreateTaskModal from "../features/tasks/components/CreateTaskModal";
@@ -9,6 +10,24 @@ import TasksViewTabs from "../features/tasks/components/TasksViewTabs";
 import { useTasksPageModel } from "../features/tasks/model/useTasksPageModel";
 import { useI18n } from "../shared/i18n/useI18n";
 
+const SEARCH_INPUT_ID = "tasks-search";
+
+function isEditableKeyboardTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  const tagName = target.tagName.toLowerCase();
+
+  return (
+    target.isContentEditable ||
+    tagName === "input" ||
+    tagName === "textarea" ||
+    tagName === "select" ||
+    target.getAttribute("role") === "textbox"
+  );
+}
+
 function TasksPage() {
   const model = useTasksPageModel();
   const location = useLocation();
@@ -16,6 +35,53 @@ function TasksPage() {
   const headerSubtitle = location.pathname.startsWith("/tasks/calendar")
     ? t("tasks.deadlineCalendar")
     : undefined;
+
+  const handleGlobalKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    if (
+      model.isLoading ||
+      event.defaultPrevented ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey ||
+      event.repeat ||
+      isEditableKeyboardTarget(event.target) ||
+      document.querySelector('[role="dialog"]')
+    ) {
+      return;
+    }
+
+    if (event.key.toLowerCase() === "n") {
+      event.preventDefault();
+      model.openCreateTaskModal();
+
+      return;
+    }
+
+    if (event.key !== "/") {
+      return;
+    }
+
+    const searchInput = document.getElementById(SEARCH_INPUT_ID);
+
+    if (!(searchInput instanceof HTMLElement)) {
+      return;
+    }
+
+    event.preventDefault();
+    searchInput.focus();
+  });
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      handleGlobalKeyDown(event);
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
 
   if (model.isLoading) {
     return (

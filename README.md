@@ -10,6 +10,13 @@ It is designed to help people:
 - mark work as done and track progress
 - share a task with someone else using a public link
 
+## Keyboard Shortcuts
+
+On the tasks page:
+
+- press `n` to open the new task modal
+- press `/` to focus the search field when it is visible
+
 ## What You Can Do
 
 With Task Manager, you can:
