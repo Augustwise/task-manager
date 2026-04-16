@@ -8,7 +8,7 @@ export async function login(credentials: AuthCredentials): Promise<AuthUserDto> 
   const data = await apiRequest<AuthResponse>("/api/login", {
     method: "POST",
     body: credentials,
-    fallbackErrorMessage: messages.invalidCredentials,
+    fallbackErrorMessage: messages.loginNetworkError,
     handleUnauthorized: false,
   });
 
@@ -20,7 +20,7 @@ export async function register(credentials: AuthCredentials): Promise<AuthUserDt
   const data = await apiRequest<AuthResponse>("/api/register", {
     method: "POST",
     body: credentials,
-    fallbackErrorMessage: messages.serverError,
+    fallbackErrorMessage: messages.signupNetworkError,
     handleUnauthorized: false,
   });
 

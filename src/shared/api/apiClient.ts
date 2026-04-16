@@ -4,14 +4,16 @@ import type { ApiRequestOptions } from "../types/api";
 let unauthorizedHandler: (() => void) | null = null;
 
 function getErrorMessage(data: unknown, fallbackErrorMessage: string): string {
-  if (
-    typeof data === "object" &&
-    data !== null &&
-    "error" in data &&
-    typeof data.error === "string" &&
-    data.error
-  ) {
-    return data.error;
+  if (typeof data === "object" && data !== null) {
+    if ("errorCode" in data && typeof data.errorCode === "string" && data.errorCode) {
+      const key = `auth.messages.${data.errorCode}`;
+      const translated = t(key);
+      if (translated !== key) return translated;
+    }
+
+    if ("error" in data && typeof data.error === "string" && data.error) {
+      return data.error;
+    }
   }
 
   return fallbackErrorMessage;
@@ -42,17 +44,22 @@ export async function apiRequest<TResponse>(
     handleUnauthorized = true,
   }: ApiRequestOptions = {},
 ): Promise<TResponse> {
-  const response = await fetch(path, {
-    method,
-    credentials: "include",
-    headers: body
-      ? {
-          "Content-Type": "application/json",
-          ...headers,
-        }
-      : headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  let response: Response;
+  try {
+    response = await fetch(path, {
+      method,
+      credentials: "include",
+      headers: body
+        ? {
+            "Content-Type": "application/json",
+            ...headers,
+          }
+        : headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch {
+    throw new Error(fallbackErrorMessage);
+  }
 
   const data = await readJson(response);
 
@@ -76,17 +83,23 @@ export async function apiRequestOrNull<TResponse>(
   path: string,
   options?: Omit<ApiRequestOptions, "handleUnauthorized">,
 ): Promise<TResponse | null> {
-  const response = await fetch(path, {
-    method: options?.method ?? "GET",
-    credentials: "include",
-    headers: options?.body
-      ? {
-          "Content-Type": "application/json",
-          ...options.headers,
-        }
-      : options?.headers,
-    body: options?.body ? JSON.stringify(options.body) : undefined,
-  });
+  const fallbackErrorMessage = options?.fallbackErrorMessage ?? t("common.requestFailed");
+  let response: Response;
+  try {
+    response = await fetch(path, {
+      method: options?.method ?? "GET",
+      credentials: "include",
+      headers: options?.body
+        ? {
+            "Content-Type": "application/json",
+            ...options.headers,
+          }
+        : options?.headers,
+      body: options?.body ? JSON.stringify(options.body) : undefined,
+    });
+  } catch {
+    throw new Error(fallbackErrorMessage);
+  }
 
   if (response.status === 401) {
     return null;
@@ -96,7 +109,7 @@ export async function apiRequestOrNull<TResponse>(
 
   if (!response.ok) {
     throw new Error(
-      getErrorMessage(data, options?.fallbackErrorMessage ?? t("common.requestFailed")),
+      getErrorMessage(data, fallbackErrorMessage),
     );
   }
 

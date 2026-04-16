@@ -8,7 +8,6 @@ const {
 } = require("../../repositories/userRepository");
 const { requireAuth } = require("../../middleware/requireAuth");
 const {
-  AUTH_MESSAGES,
   getCredentialsFromRequest,
   hasValidCredentials,
 } = require("../../validators/authValidator");
@@ -26,18 +25,18 @@ const authLimiter = rateLimit({
   limit: 10,
   standardHeaders: "draft-7",
   legacyHeaders: false,
-  message: { error: "Too many attempts. Please try again in 15 minutes." },
+  message: { errorCode: "tooManyAttempts" },
 });
 
 router.post("/register", authLimiter, async (req, res) => {
   const { email, password } = getCredentialsFromRequest(req);
 
   if (!email || !password) {
-    return res.status(400).json({ error: AUTH_MESSAGES.missingFields });
+    return res.status(400).json({ errorCode: "missingFields" });
   }
 
   if (!hasValidCredentials(email, password)) {
-    return res.status(400).json({ error: AUTH_MESSAGES.invalidFormat });
+    return res.status(400).json({ errorCode: "invalidFormat" });
   }
 
   try {
@@ -48,11 +47,11 @@ router.post("/register", authLimiter, async (req, res) => {
     return res.status(201).json({ success: true, user: serializeUser(user) });
   } catch (err) {
     if (err instanceof UniqueConstraintError) {
-      return res.status(409).json({ error: AUTH_MESSAGES.emailAlreadyExists });
+      return res.status(409).json({ errorCode: "emailAlreadyExists" });
     }
 
     console.error(err);
-    return res.status(500).json({ error: AUTH_MESSAGES.serverError });
+    return res.status(500).json({ errorCode: "serverError" });
   }
 });
 
@@ -60,22 +59,22 @@ router.post("/login", authLimiter, async (req, res) => {
   const { email, password } = getCredentialsFromRequest(req);
 
   if (!email || !password) {
-    return res.status(400).json({ error: AUTH_MESSAGES.missingFields });
+    return res.status(400).json({ errorCode: "missingFields" });
   }
 
   if (!hasValidCredentials(email, password)) {
-    return res.status(400).json({ error: AUTH_MESSAGES.invalidFormat });
+    return res.status(400).json({ errorCode: "invalidFormat" });
   }
 
   try {
     const user = await findUserByEmail(email);
     if (!user) {
-      return res.status(401).json({ error: AUTH_MESSAGES.invalidCredentials });
+      return res.status(401).json({ errorCode: "invalidCredentials" });
     }
 
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) {
-      return res.status(401).json({ error: AUTH_MESSAGES.invalidCredentials });
+      return res.status(401).json({ errorCode: "invalidCredentials" });
     }
 
     signInUser(req, user);
@@ -83,7 +82,7 @@ router.post("/login", authLimiter, async (req, res) => {
     return res.json({ success: true, user: serializeUser(user) });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: AUTH_MESSAGES.serverError });
+    return res.status(500).json({ errorCode: "serverError" });
   }
 });
 
@@ -98,7 +97,7 @@ router.post("/logout", async (req, res) => {
     return res.json({ success: true });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: AUTH_MESSAGES.serverError });
+    return res.status(500).json({ errorCode: "serverError" });
   }
 });
 

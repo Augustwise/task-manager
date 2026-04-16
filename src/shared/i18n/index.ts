@@ -160,6 +160,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         sessionRestoreFailed: "Failed to restore session",
         loginNetworkError: "Login failed: could not reach server",
         signupNetworkError: "Signup failed: could not reach server",
+        tooManyAttempts: "Too many attempts. Please try again later.",
       },
     },
     tasks: {
@@ -433,6 +434,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         sessionRestoreFailed: "Не удалось восстановить сессию",
         loginNetworkError: "Не удалось войти: сервер недоступен",
         signupNetworkError: "Не удалось зарегистрироваться: сервер недоступен",
+        tooManyAttempts: "Слишком много попыток. Пожалуйста, попробуйте позже.",
       },
     },
     tasks: {
@@ -708,6 +710,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         sessionRestoreFailed: "Не вдалося відновити сесію",
         loginNetworkError: "Не вдалося увійти: сервер недоступний",
         signupNetworkError: "Не вдалося зареєструватися: сервер недоступний",
+        tooManyAttempts: "Забагато спроб. Будь ласка, спробуйте пізніше.",
       },
     },
     tasks: {
