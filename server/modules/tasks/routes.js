@@ -1,5 +1,6 @@
 const crypto = require("node:crypto");
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const {
   createTask,
   deleteTask,
@@ -21,6 +22,15 @@ const {
 } = require("../../validators/taskValidator");
 
 const router = express.Router();
+const taskCreationLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  limit: 400,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: {
+    error: "Request limit reached. Please try again later.",
+  },
+});
 
 async function generateUniqueShareToken(taskId) {
   for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -68,7 +78,7 @@ router.get("/tasks", async (req, res) => {
   }
 });
 
-router.post("/tasks", async (req, res) => {
+router.post("/tasks", taskCreationLimiter, async (req, res) => {
   try {
     const result = validateCreateTaskPayload(req.body);
 

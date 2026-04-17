@@ -12,6 +12,7 @@ function createApp({ sessionStore }) {
     throw new Error("Session store is required");
   }
 
+  app.set("trust proxy", env.trustProxy);
   app.use(express.json());
   app.use(cors({ origin: env.clientOrigin, credentials: true }));
   app.use(createSessionMiddleware(sessionStore));

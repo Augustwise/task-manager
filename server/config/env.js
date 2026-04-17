@@ -21,10 +21,39 @@ function getBoolean(name, fallback = false) {
   return rawValue === "true" || rawValue === "1";
 }
 
+function getTrustProxy(name, fallback = false) {
+  const rawValue = process.env[name];
+
+  if (rawValue == null) {
+    return fallback;
+  }
+
+  const normalizedValue = rawValue.trim();
+  if (!normalizedValue) {
+    return fallback;
+  }
+
+  if (normalizedValue === "true") {
+    return true;
+  }
+
+  if (normalizedValue === "false") {
+    return false;
+  }
+
+  const parsedNumber = Number.parseInt(normalizedValue, 10);
+  if (!Number.isNaN(parsedNumber) && String(parsedNumber) === normalizedValue) {
+    return parsedNumber;
+  }
+
+  return normalizedValue;
+}
+
 const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   serverPort: getNumber("SERVER_PORT", 3001),
   clientOrigin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+  trustProxy: getTrustProxy("TRUST_PROXY", false),
   sessionSecret: process.env.SESSION_SECRET || "dev-only-session-secret",
   db: {
     name: process.env.DB_NAME,
