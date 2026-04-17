@@ -114,6 +114,9 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       progressTrackingTitle: "Progress Tracking",
       progressTrackingDescription:
         "Stay on top of momentum with active and completed task sections plus a clear progress summary.",
+      recurringTasksTitle: "Recurring Tasks",
+      recurringTasksDescription:
+        "Set tasks to repeat daily, weekly, or monthly — they roll forward automatically when completed.",
       secureAuthenticationTitle: "Secure Authentication",
       secureAuthenticationDescription:
         "Your data is protected with a secure login and registration system.",
@@ -407,6 +410,9 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       progressTrackingTitle: "Отслеживание прогресса",
       progressTrackingDescription:
         "Следите за прогрессом с помощью списков активных и выполненных задач и понятной сводки.",
+      recurringTasksTitle: "Повторяющиеся задачи",
+      recurringTasksDescription:
+        "Настройте задачи на ежедневное, еженедельное или ежемесячное повторение - они автоматически переносятся на следующую дату после выполнения.",
       secureAuthenticationTitle: "Безопасная аутентификация",
       secureAuthenticationDescription:
         "Ваши данные защищены благодаря безопасной системе входа и регистрации.",
@@ -704,6 +710,9 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       progressTrackingTitle: "Відстеження прогресу",
       progressTrackingDescription:
         "Слідкуйте за просуванням завдяки спискам активних і виконаних завдань та зрозумілому підсумку прогресу.",
+      recurringTasksTitle: "Повторювані завдання",
+      recurringTasksDescription:
+        "Налаштуйте завдання на щоденне, щотижневе або щомісячне повторення - вони автоматично переносяться на наступну дату після виконання.",
       secureAuthenticationTitle: "Безпечна автентифікація",
       secureAuthenticationDescription:
         "Ваші дані захищені завдяки безпечній системі входу та реєстрації.",

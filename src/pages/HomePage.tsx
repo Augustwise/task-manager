@@ -71,6 +71,10 @@ function HomePage() {
               <p>{t("home.progressTrackingDescription")}</p>
             </div>
             <div className="features__item">
+              <h3 className="features__title">{t("home.recurringTasksTitle")}</h3>
+              <p>{t("home.recurringTasksDescription")}</p>
+            </div>
+            <div className="features__item">
               <h3 className="features__title">{t("home.secureAuthenticationTitle")}</h3>
               <p>{t("home.secureAuthenticationDescription")}</p>
             </div>
