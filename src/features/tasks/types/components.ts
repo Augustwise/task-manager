@@ -34,6 +34,7 @@ export interface TaskCardProps {
   readonly onSubtaskCompletionChange: (taskId: number, subtaskId: number, completed: boolean) => void;
   readonly onEditClick: (task: TaskDto) => void;
   readonly onDeleteClick: (task: TaskDto) => void;
+  readonly onRestoreClick?: (task: TaskDto) => void;
   readonly onShareClick: (task: TaskDto) => void;
   readonly onShareRevokeClick: (task: TaskDto) => void;
 }
@@ -65,6 +66,7 @@ export interface TaskListSectionProps {
   readonly onSubtaskCompletionChange: (taskId: number, subtaskId: number, completed: boolean) => void;
   readonly onTaskEditClick: (task: TaskDto) => void;
   readonly onTaskDeleteClick: (task: TaskDto) => void;
+  readonly onTaskRestoreClick?: (task: TaskDto) => void;
   readonly onTaskShareClick: (task: TaskDto) => void;
   readonly onTaskShareRevokeClick: (task: TaskDto) => void;
 }
@@ -90,8 +92,10 @@ export interface TasksBulkActionBarProps {
   readonly selectedTasks: readonly TaskDto[];
   readonly canUpdateCompletion: boolean;
   readonly isPending: boolean;
+  readonly showRestoreAction: boolean;
   readonly completionAction: "complete" | "activate";
   readonly onUpdateCompletion: () => Promise<boolean>;
+  readonly onRestore: () => Promise<boolean>;
   readonly onDelete: () => void;
   readonly onClearSelection: () => void;
   readonly onApplyPriority: (priority: Priority) => Promise<boolean>;

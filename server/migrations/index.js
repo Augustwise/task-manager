@@ -21,6 +21,11 @@ async function runMigrations(sequelize) {
     type: DataTypes.DATEONLY,
     allowNull: true,
   });
+
+  await addColumnIfMissing(queryInterface, "tasks", "deleted_at", {
+    type: DataTypes.DATE,
+    allowNull: true,
+  });
 }
 
 module.exports = { runMigrations };

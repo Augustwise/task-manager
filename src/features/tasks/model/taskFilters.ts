@@ -1,4 +1,5 @@
 import type { Priority, TaskDto } from "../../../shared/types";
+import { isTaskDeleted } from "../lib/archive";
 import type { PriorityFilter, SortOption, StatusFilter } from "../types/model";
 
 const PRIORITY_ORDER: Record<Priority, number> = {
@@ -29,6 +30,16 @@ function matchesSearch(task: TaskDto, query: string): boolean {
 }
 
 function matchesStatus(task: TaskDto, statusFilter: StatusFilter): boolean {
+  const deleted = isTaskDeleted(task);
+
+  if (statusFilter === "deleted") {
+    return deleted;
+  }
+
+  if (deleted) {
+    return false;
+  }
+
   if (statusFilter === "active") {
     return !task.completed;
   }
@@ -59,13 +70,21 @@ export function getFilteredTasks(
         matchesPriority(task, priorityFilter),
     ),
     sortBy,
+    statusFilter,
   );
 }
 
-function sortTasks(tasks: TaskDto[], sortBy: SortOption): TaskDto[] {
+function sortTasks(tasks: TaskDto[], sortBy: SortOption, statusFilter: StatusFilter): TaskDto[] {
   const sortedTasks = [...tasks];
 
   sortedTasks.sort((left, right) => {
+    if (statusFilter === "deleted") {
+      return (
+        getDateValue(right.deletedAt) - getDateValue(left.deletedAt) ||
+        right.id - left.id
+      );
+    }
+
     if (sortBy === "priority") {
       return (
         PRIORITY_ORDER[left.priority] - PRIORITY_ORDER[right.priority] ||

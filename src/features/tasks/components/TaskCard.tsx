@@ -7,6 +7,7 @@ import sharePublicIcon from "../../../assets/icon-share-public.svg";
 import trashIcon from "../../../assets/icon-trash.svg";
 import { useI18n } from "../../../shared/i18n/useI18n";
 import type { SupportedLanguage } from "../../../shared/i18n";
+import { getTaskRestoreDeadline, isTaskDeleted } from "../lib/archive";
 import { getTodayParts, parseIsoDate } from "../lib/calendarDate";
 import type { TaskCardProps } from "../types/components";
 
@@ -55,6 +56,19 @@ function dueDateClass(dateStr: string): string {
   return "task-card__due-date--normal";
 }
 
+function formatArchiveDate(value: string, locale: string): string {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+  }).format(date);
+}
+
 function TaskCard({
   task,
   isUpdating,
@@ -65,6 +79,7 @@ function TaskCard({
   onSubtaskCompletionChange,
   onEditClick,
   onDeleteClick,
+  onRestoreClick,
   onShareClick,
   onShareRevokeClick,
 }: TaskCardProps) {
@@ -74,13 +89,16 @@ function TaskCard({
   const hasTag = task.tag.trim().length > 0;
   const isShared = task.shareToken !== null;
   const isRecurring = (task.recurrence ?? "none") !== "none";
-  const { t, language } = useI18n();
+  const isDeleted = isTaskDeleted(task);
+  const restoreDeadline = getTaskRestoreDeadline(task);
+  const { t, language, locale } = useI18n();
   const isSelectionMode = checkboxMode === "select";
   const checkboxChecked = isSelectionMode ? isSelected : task.completed;
   const shareActionLabel = isShared
     ? t("tasks.card.copyLinkAriaLabel")
     : t("tasks.card.createLinkAriaLabel");
   const revokeShareLabel = t("tasks.card.revokeLinkAriaLabel");
+  const restoreActionLabel = t("tasks.card.restoreTaskAriaLabel");
   const checkboxAriaLabel = isSelectionMode
     ? t("tasks.card.toggleSelectionAriaLabel", {
         title: task.title,
@@ -94,6 +112,7 @@ function TaskCard({
   return (
     <div
       className={classNames("task-card", {
+        "task-card--deleted": isDeleted,
         "task-card--selected": isSelected,
         "task-card--updating": isUpdating,
       })}
@@ -101,7 +120,7 @@ function TaskCard({
       <Checkbox
         className="task-card__checkbox"
         checked={checkboxChecked}
-        disabled={isUpdating}
+        disabled={isUpdating || (isDeleted && !isSelectionMode)}
         disableRipple
         size="small"
         onChange={(event) => {
@@ -132,60 +151,77 @@ function TaskCard({
           <div
             className={classNames("task-card__title", {
               "task-card__title--completed": task.completed,
+              "task-card__title--deleted": isDeleted,
             })}
           >
             {task.title}
           </div>
           <div className="task-card__controls">
-            <div className="task-card__action-group task-card__action-group--share">
-              <button
-                type="button"
-                className={classNames(
-                  "task-card__action task-card__action--icon task-card__action--share-link",
-                  {
-                    "task-card__action--share-link-active": isShared,
-                  },
-                )}
-                aria-label={shareActionLabel}
-                title={shareActionLabel}
-                disabled={isUpdating}
-                onClick={() => onShareClick(task)}
-              >
-                <img src={sharePublicIcon} alt="" width="18" height="18" />
-              </button>
-              {isShared ? (
+            {isDeleted ? (
+              <div className="task-card__action-group task-card__action-group--share">
                 <button
                   type="button"
-                  className="task-card__action task-card__action--icon task-card__action--share-link-off"
-                  aria-label={revokeShareLabel}
-                  title={revokeShareLabel}
-                  disabled={isUpdating}
-                  onClick={() => onShareRevokeClick(task)}
+                  className="task-card__action task-card__action--restore"
+                  aria-label={restoreActionLabel}
+                  disabled={isUpdating || !onRestoreClick}
+                  onClick={() => onRestoreClick?.(task)}
                 >
-                  <img src={sharePrivateIcon} alt="" width="18" height="18" />
+                  {t("tasks.card.restoreTaskLabel")}
                 </button>
-              ) : null}
-            </div>
-            <div className="task-card__icon-actions">
-              <button
-                type="button"
-                className="task-card__action task-card__action--icon"
-                aria-label={t("tasks.card.editTaskAriaLabel")}
-                disabled={isUpdating}
-                onClick={() => onEditClick(task)}
-              >
-                <img src={editIcon} alt="" width="16" height="16" />
-              </button>
-              <button
-                type="button"
-                className="task-card__action task-card__action--icon"
-                aria-label={t("tasks.card.deleteTaskAriaLabel")}
-                disabled={isUpdating}
-                onClick={() => onDeleteClick(task)}
-              >
-                <img src={trashIcon} alt="" width="16" height="16" />
-              </button>
-            </div>
+              </div>
+            ) : (
+              <>
+                <div className="task-card__action-group task-card__action-group--share">
+                  <button
+                    type="button"
+                    className={classNames(
+                      "task-card__action task-card__action--icon task-card__action--share-link",
+                      {
+                        "task-card__action--share-link-active": isShared,
+                      },
+                    )}
+                    aria-label={shareActionLabel}
+                    title={shareActionLabel}
+                    disabled={isUpdating}
+                    onClick={() => onShareClick(task)}
+                  >
+                    <img src={sharePublicIcon} alt="" width="18" height="18" />
+                  </button>
+                  {isShared ? (
+                    <button
+                      type="button"
+                      className="task-card__action task-card__action--icon task-card__action--share-link-off"
+                      aria-label={revokeShareLabel}
+                      title={revokeShareLabel}
+                      disabled={isUpdating}
+                      onClick={() => onShareRevokeClick(task)}
+                    >
+                      <img src={sharePrivateIcon} alt="" width="18" height="18" />
+                    </button>
+                  ) : null}
+                </div>
+                <div className="task-card__icon-actions">
+                  <button
+                    type="button"
+                    className="task-card__action task-card__action--icon"
+                    aria-label={t("tasks.card.editTaskAriaLabel")}
+                    disabled={isUpdating}
+                    onClick={() => onEditClick(task)}
+                  >
+                    <img src={editIcon} alt="" width="16" height="16" />
+                  </button>
+                  <button
+                    type="button"
+                    className="task-card__action task-card__action--icon"
+                    aria-label={t("tasks.card.deleteTaskAriaLabel")}
+                    disabled={isUpdating}
+                    onClick={() => onDeleteClick(task)}
+                  >
+                    <img src={trashIcon} alt="" width="16" height="16" />
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
         <div
@@ -205,7 +241,7 @@ function TaskCard({
                     type="checkbox"
                     className="task-card__subtask-checkbox"
                     checked={subtask.completed}
-                    disabled={isUpdating}
+                    disabled={isUpdating || isDeleted}
                     onChange={(event) => {
                       onSubtaskCompletionChange(task.id, subtask.id, event.target.checked);
                     }}
@@ -228,6 +264,9 @@ function TaskCard({
         )}
       </div>
       <div className="task-card__meta">
+        {isDeleted ? (
+          <span className="task-card__archive-badge">{t("common.deleted")}</span>
+        ) : null}
         <span className={classNames("priority-badge", `priority-badge--${task.priority}`)}>
           {t(`common.priorityLevels.${task.priority}`)}
         </span>
@@ -259,6 +298,13 @@ function TaskCard({
             <span className="recurrence-badge__label">
               {t(`tasks.recurrence.${task.recurrence}`)}
             </span>
+          </span>
+        ) : null}
+        {restoreDeadline ? (
+          <span className="task-card__archive-note">
+            {t("tasks.archive.restorableUntil", {
+              date: formatArchiveDate(restoreDeadline.toISOString(), locale),
+            })}
           </span>
         ) : null}
       </div>

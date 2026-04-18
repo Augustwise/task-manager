@@ -5,9 +5,11 @@ const {
   createTask,
   deleteTask,
   findTaskByIdForUser,
+  findTaskByIdForUserWithOptions,
   findTaskByShareToken,
   findTaskByShareTokenForOtherTask,
   findTasksByUserId,
+  restoreTask,
   setTaskShareToken,
   updateTask,
   updateTaskCompletion,
@@ -43,6 +45,10 @@ async function generateUniqueShareToken(taskId) {
   }
 
   throw new Error("Failed to generate a unique share token");
+}
+
+function findActiveTaskByIdForUser(taskId, userId) {
+  return findTaskByIdForUserWithOptions(taskId, userId, { includeDeleted: false });
 }
 
 router.get("/public/tasks/:shareToken", async (req, res) => {
@@ -116,7 +122,7 @@ router.post("/tasks/:taskId/share", async (req, res) => {
       return res.status(400).json({ error: "Task id must be a positive integer" });
     }
 
-    const task = await findTaskByIdForUser(taskId, req.user.id);
+    const task = await findActiveTaskByIdForUser(taskId, req.user.id);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
@@ -138,7 +144,7 @@ router.delete("/tasks/:taskId/share", async (req, res) => {
       return res.status(400).json({ error: "Task id must be a positive integer" });
     }
 
-    const task = await findTaskByIdForUser(taskId, req.user.id);
+    const task = await findActiveTaskByIdForUser(taskId, req.user.id);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
@@ -164,7 +170,7 @@ router.put("/tasks/:taskId", async (req, res) => {
       return res.status(400).json({ error: result.error });
     }
 
-    const task = await findTaskByIdForUser(taskId, req.user.id);
+    const task = await findActiveTaskByIdForUser(taskId, req.user.id);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
@@ -196,7 +202,7 @@ router.patch("/tasks/:taskId", async (req, res) => {
       return res.status(400).json({ error: result.error });
     }
 
-    const task = await findTaskByIdForUser(taskId, req.user.id);
+    const task = await findActiveTaskByIdForUser(taskId, req.user.id);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
@@ -225,7 +231,7 @@ router.patch("/tasks/:taskId/subtasks/:subtaskId", async (req, res) => {
       return res.status(400).json({ error: "completed must be a boolean" });
     }
 
-    const task = await findTaskByIdForUser(taskId, req.user.id);
+    const task = await findActiveTaskByIdForUser(taskId, req.user.id);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
@@ -237,7 +243,7 @@ router.patch("/tasks/:taskId/subtasks/:subtaskId", async (req, res) => {
 
     await updateSubtaskCompletion(subtask, req.body.completed);
 
-    const refreshedTask = await findTaskByIdForUser(taskId, req.user.id);
+    const refreshedTask = await findActiveTaskByIdForUser(taskId, req.user.id);
     const allDone = refreshedTask.subtasks.length > 0 && refreshedTask.subtasks.every((s) => s.completed);
     const anyIncomplete = refreshedTask.subtasks.some((s) => !s.completed);
 
@@ -247,7 +253,7 @@ router.patch("/tasks/:taskId/subtasks/:subtaskId", async (req, res) => {
       await updateTaskCompletion(refreshedTask, false);
     }
 
-    const finalTask = await findTaskByIdForUser(taskId, req.user.id);
+    const finalTask = await findActiveTaskByIdForUser(taskId, req.user.id);
 
     return res.json({ task: serializeTask(finalTask) });
   } catch (err) {
@@ -263,14 +269,35 @@ router.delete("/tasks/:taskId", async (req, res) => {
       return res.status(400).json({ error: "Task id must be a positive integer" });
     }
 
-    const task = await findTaskByIdForUser(taskId, req.user.id);
+    const task = await findActiveTaskByIdForUser(taskId, req.user.id);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
 
-    await deleteTask(task);
+    const deletedTask = await deleteTask(task);
 
-    return res.status(204).send();
+    return res.json({ task: serializeTask(deletedTask) });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: AUTH_MESSAGES.serverError });
+  }
+});
+
+router.patch("/tasks/:taskId/restore", async (req, res) => {
+  try {
+    const taskId = Number.parseInt(req.params.taskId, 10);
+    if (!Number.isInteger(taskId) || taskId <= 0) {
+      return res.status(400).json({ error: "Task id must be a positive integer" });
+    }
+
+    const task = await findTaskByIdForUser(taskId, req.user.id);
+    if (!task || !task.deleted_at) {
+      return res.status(404).json({ error: "Deleted task not found" });
+    }
+
+    const restoredTask = await restoreTask(task);
+
+    return res.json({ task: serializeTask(restoredTask) });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: AUTH_MESSAGES.serverError });

@@ -17,6 +17,8 @@ export interface TaskDto {
   createdAt: string;
   tag: string;
   completed: boolean;
+  deletedAt: string;
+  restoreAvailableUntil: string;
   shareToken: string | null;
   recurrence: Recurrence;
   recurrenceEndDate: string;

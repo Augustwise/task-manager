@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { TaskDto } from "../../../shared/types";
 import { t } from "../../../shared/i18n";
 import { getTasks } from "../api/tasksApi";
+import { isTaskDeleted } from "../lib/archive";
 import { getTaskSummary } from "../lib/getTaskSummary";
 import type { PriorityFilter, SortOption, StatusFilter } from "../types/model";
 import { getFilteredTasks } from "./taskFilters";
@@ -56,9 +57,14 @@ export function useTaskQueries() {
   }
 
   const filteredTasks = getFilteredTasks(tasks, searchQuery, statusFilter, priorityFilter, sortBy);
+  const liveTasks = tasks.filter((task) => !isTaskDeleted(task));
+  const activeTasks = filteredTasks.filter((task) => !isTaskDeleted(task) && !task.completed);
+  const completedTasks = filteredTasks.filter((task) => !isTaskDeleted(task) && task.completed);
+  const deletedTasks = filteredTasks.filter((task) => isTaskDeleted(task));
 
   return {
     tasks,
+    liveTasks,
     setTasks,
     isLoading,
     error,
@@ -72,9 +78,10 @@ export function useTaskQueries() {
     setPriorityFilter,
     setStatusFilter,
     filteredTasks,
-    activeTasks: filteredTasks.filter((task) => !task.completed),
-    completedTasks: filteredTasks.filter((task) => task.completed),
+    activeTasks,
+    completedTasks,
+    deletedTasks,
     visibleCount: filteredTasks.length,
-    summary: getTaskSummary(tasks),
+    summary: getTaskSummary(liveTasks),
   };
 }

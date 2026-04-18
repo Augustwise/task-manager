@@ -12,6 +12,7 @@ function TaskListSection({
   onSubtaskCompletionChange,
   onTaskEditClick,
   onTaskDeleteClick,
+  onTaskRestoreClick,
   onTaskShareClick,
   onTaskShareRevokeClick,
 }: TaskListSectionProps) {
@@ -34,6 +35,7 @@ function TaskListSection({
           onSubtaskCompletionChange={onSubtaskCompletionChange}
           onEditClick={onTaskEditClick}
           onDeleteClick={onTaskDeleteClick}
+          onRestoreClick={onTaskRestoreClick}
           onShareClick={onTaskShareClick}
           onShareRevokeClick={onTaskShareRevokeClick}
         />

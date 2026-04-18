@@ -10,6 +10,7 @@ import type { TasksListViewProps } from "../types/components";
 
 function TasksListView({ model }: TasksListViewProps) {
   const { t } = useI18n();
+  const isDeletedView = model.taskLists.isDeletedView;
   const clearSelectionOnUnmount = useEffectEvent(() => {
     model.taskLists.clearSelection();
   });
@@ -36,32 +37,53 @@ function TasksListView({ model }: TasksListViewProps) {
 
       <TasksColumnHeaders />
 
-      <TaskListSection
-        title={t("common.active")}
-        tasks={model.taskLists.activeTasks}
-        pendingTaskIds={model.taskLists.pendingTaskIds}
-        selectedTaskIds={model.taskLists.selectedTaskIds}
-        onTaskCompletionChange={model.taskLists.toggleTaskCompletion}
-        onTaskSelectionChange={model.taskLists.onTaskSelectionChange}
-        onSubtaskCompletionChange={model.taskLists.toggleSubtaskCompletion}
-        onTaskEditClick={model.taskLists.openEditTaskModal}
-        onTaskDeleteClick={model.taskLists.openDeleteTaskModal}
-        onTaskShareClick={model.taskLists.shareTask}
-        onTaskShareRevokeClick={model.taskLists.revokeTaskShare}
-      />
-      <TaskListSection
-        title={t("common.completed")}
-        tasks={model.taskLists.completedTasks}
-        pendingTaskIds={model.taskLists.pendingTaskIds}
-        selectedTaskIds={model.taskLists.selectedTaskIds}
-        onTaskCompletionChange={model.taskLists.toggleTaskCompletion}
-        onTaskSelectionChange={model.taskLists.onTaskSelectionChange}
-        onSubtaskCompletionChange={model.taskLists.toggleSubtaskCompletion}
-        onTaskEditClick={model.taskLists.openEditTaskModal}
-        onTaskDeleteClick={model.taskLists.openDeleteTaskModal}
-        onTaskShareClick={model.taskLists.shareTask}
-        onTaskShareRevokeClick={model.taskLists.revokeTaskShare}
-      />
+      {isDeletedView ? (
+        <TaskListSection
+          title={t("common.deleted")}
+          tasks={model.taskLists.deletedTasks}
+          pendingTaskIds={model.taskLists.pendingTaskIds}
+          selectedTaskIds={model.taskLists.selectedTaskIds}
+          onTaskCompletionChange={model.taskLists.toggleTaskCompletion}
+          onTaskSelectionChange={model.taskLists.onTaskSelectionChange}
+          onSubtaskCompletionChange={model.taskLists.toggleSubtaskCompletion}
+          onTaskEditClick={model.taskLists.openEditTaskModal}
+          onTaskDeleteClick={model.taskLists.openDeleteTaskModal}
+          onTaskRestoreClick={(task) => {
+            void model.taskLists.restoreTask(task.id);
+          }}
+          onTaskShareClick={model.taskLists.shareTask}
+          onTaskShareRevokeClick={model.taskLists.revokeTaskShare}
+        />
+      ) : (
+        <>
+          <TaskListSection
+            title={t("common.active")}
+            tasks={model.taskLists.activeTasks}
+            pendingTaskIds={model.taskLists.pendingTaskIds}
+            selectedTaskIds={model.taskLists.selectedTaskIds}
+            onTaskCompletionChange={model.taskLists.toggleTaskCompletion}
+            onTaskSelectionChange={model.taskLists.onTaskSelectionChange}
+            onSubtaskCompletionChange={model.taskLists.toggleSubtaskCompletion}
+            onTaskEditClick={model.taskLists.openEditTaskModal}
+            onTaskDeleteClick={model.taskLists.openDeleteTaskModal}
+            onTaskShareClick={model.taskLists.shareTask}
+            onTaskShareRevokeClick={model.taskLists.revokeTaskShare}
+          />
+          <TaskListSection
+            title={t("common.completed")}
+            tasks={model.taskLists.completedTasks}
+            pendingTaskIds={model.taskLists.pendingTaskIds}
+            selectedTaskIds={model.taskLists.selectedTaskIds}
+            onTaskCompletionChange={model.taskLists.toggleTaskCompletion}
+            onTaskSelectionChange={model.taskLists.onTaskSelectionChange}
+            onSubtaskCompletionChange={model.taskLists.toggleSubtaskCompletion}
+            onTaskEditClick={model.taskLists.openEditTaskModal}
+            onTaskDeleteClick={model.taskLists.openDeleteTaskModal}
+            onTaskShareClick={model.taskLists.shareTask}
+            onTaskShareRevokeClick={model.taskLists.revokeTaskShare}
+          />
+        </>
+      )}
 
       {model.taskLists.visibleCount === 0 ? (
         <div className="tasks-page__empty-state">{t("tasks.list.empty")}</div>
@@ -82,8 +104,10 @@ function TasksListView({ model }: TasksListViewProps) {
         selectedTasks={model.taskLists.selectedTasks}
         canUpdateCompletion={model.taskLists.canUpdateCompletion}
         isPending={model.taskLists.isBulkActionPending}
+        showRestoreAction={model.taskLists.isDeletedView}
         completionAction={model.taskLists.completionAction}
         onUpdateCompletion={model.taskLists.updateSelectedTasksCompletion}
+        onRestore={model.taskLists.restoreSelectedTasks}
         onDelete={model.taskLists.openBulkDeleteModal}
         onClearSelection={model.taskLists.clearSelection}
         onApplyPriority={model.taskLists.updateSelectedTasksPriority}

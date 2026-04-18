@@ -18,8 +18,10 @@ function TasksBulkActionBar({
   selectedTasks,
   canUpdateCompletion,
   isPending,
+  showRestoreAction,
   completionAction,
   onUpdateCompletion,
+  onRestore,
   onDelete,
   onClearSelection,
   onApplyPriority,
@@ -93,50 +95,64 @@ function TasksBulkActionBar({
               alignItems={{ xs: "stretch", sm: "center" }}
               sx={{ flex: 1 }}
             >
-              <Button
-                variant="contained"
-                disabled={isPending || !canUpdateCompletion}
-                onClick={() => {
-                  void onUpdateCompletion();
-                }}
-              >
-                {completionAction === "activate"
-                  ? t("tasks.bulk.activate")
-                  : t("tasks.bulk.complete")}
-              </Button>
-              <Button
-                color="error"
-                variant="outlined"
-                disabled={isPending}
-                onClick={onDelete}
-              >
-                {t("tasks.bulk.delete")}
-              </Button>
-              <TextField
-                select
-                size="small"
-                label={t("tasks.bulk.priority")}
-                value={priority}
-                disabled={isPending}
-                onChange={(event) => setPriority(event.target.value as Priority | "")}
-                sx={{ minWidth: { sm: 170 } }}
-              >
-                <MenuItem disabled value="">
-                  {t("tasks.bulk.choosePriority")}
-                </MenuItem>
-                <MenuItem value="high">{t("common.priorityLevels.high")}</MenuItem>
-                <MenuItem value="medium">{t("common.priorityLevels.medium")}</MenuItem>
-                <MenuItem value="low">{t("common.priorityLevels.low")}</MenuItem>
-              </TextField>
-              <Button
-                variant="outlined"
-                disabled={isPending || !canApplyPriority}
-                onClick={() => {
-                  void handlePriorityApply();
-                }}
-              >
-                {t("tasks.bulk.applyPriority")}
-              </Button>
+              {showRestoreAction ? (
+                <Button
+                  variant="contained"
+                  disabled={isPending}
+                  onClick={() => {
+                    void onRestore();
+                  }}
+                >
+                  {t("tasks.bulk.restore")}
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    variant="contained"
+                    disabled={isPending || !canUpdateCompletion}
+                    onClick={() => {
+                      void onUpdateCompletion();
+                    }}
+                  >
+                    {completionAction === "activate"
+                      ? t("tasks.bulk.activate")
+                      : t("tasks.bulk.complete")}
+                  </Button>
+                  <Button
+                    color="error"
+                    variant="outlined"
+                    disabled={isPending}
+                    onClick={onDelete}
+                  >
+                    {t("tasks.bulk.delete")}
+                  </Button>
+                  <TextField
+                    select
+                    size="small"
+                    label={t("tasks.bulk.priority")}
+                    value={priority}
+                    disabled={isPending}
+                    onChange={(event) => setPriority(event.target.value as Priority | "")}
+                    sx={{ minWidth: { sm: 170 } }}
+                  >
+                    <MenuItem disabled value="">
+                      {t("tasks.bulk.choosePriority")}
+                    </MenuItem>
+                    <MenuItem value="high">{t("common.priorityLevels.high")}</MenuItem>
+                    <MenuItem value="medium">{t("common.priorityLevels.medium")}</MenuItem>
+                    <MenuItem value="low">{t("common.priorityLevels.low")}</MenuItem>
+                  </TextField>
+                  <Button
+                    variant="outlined"
+                    disabled={isPending || !canApplyPriority}
+                    onClick={() => {
+                      void handlePriorityApply();
+                    }}
+                  >
+                    {t("tasks.bulk.applyPriority")}
+                  </Button>
+                </>
+              )}
             </Stack>
 
             <Button

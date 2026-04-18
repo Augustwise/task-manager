@@ -5,6 +5,7 @@ import {
   createShareLink,
   createTask,
   deleteTask,
+  restoreTask as apiRestoreTask,
   revokeShareLink,
   toggleSubtaskCompletion as apiToggleSubtaskCompletion,
   updateTask,
@@ -375,6 +376,40 @@ export function useTaskMutations({
     }
   }
 
+  async function restoreTask(taskId: number) {
+    const previousTask = tasks.find((task) => task.id === taskId);
+
+    if (!previousTask) {
+      return;
+    }
+
+    addPendingTaskIds([taskId]);
+
+    try {
+      const restoredTask = await apiRestoreTask(taskId);
+
+      setTasks((currentTasks) =>
+        currentTasks.map((task) => (task.id === restoredTask.id ? restoredTask : task)),
+      );
+      setCompletionError(null);
+    } catch (err) {
+      setCompletionError(err instanceof Error ? err.message : t("tasks.errors.restoreTask"));
+    } finally {
+      removePendingTaskIds([taskId]);
+    }
+  }
+
+  async function restoreSelectedTasks() {
+    const taskIdsToRestore = selection.selectedTasks.map((task) => task.id);
+
+    return runBulkTaskAction(
+      taskIdsToRestore,
+      "restore",
+      (taskId) => apiRestoreTask(taskId),
+      (failedCount) => t("tasks.bulk.restorePartialFailure", { count: failedCount }),
+    );
+  }
+
   async function confirmTaskDelete() {
     if (!deleteModal.deleteTarget) {
       return;
@@ -398,8 +433,10 @@ export function useTaskMutations({
     deleteModal.setDeleteError(null);
 
     try {
-      await deleteTask(taskId);
-      setTasks((currentTasks) => currentTasks.filter((task) => task.id !== taskId));
+      const deletedTask = await deleteTask(taskId);
+      setTasks((currentTasks) =>
+        currentTasks.map((task) => (task.id === deletedTask.id ? deletedTask : task)),
+      );
       deleteModal.closeDeleteTaskModal();
     } catch (err) {
       deleteModal.setDeleteError(err instanceof Error ? err.message : t("tasks.errors.deleteTask"));
@@ -422,6 +459,8 @@ export function useTaskMutations({
     updateSelectedTasksPriority,
     shareTask,
     revokeTaskShare,
+    restoreTask,
+    restoreSelectedTasks,
     confirmTaskDelete,
   };
 }

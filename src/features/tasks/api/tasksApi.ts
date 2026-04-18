@@ -91,9 +91,20 @@ export async function toggleSubtaskCompletion(
   return data.task;
 }
 
-export async function deleteTask(taskId: number): Promise<void> {
-  await apiRequest<void>(`/api/tasks/${taskId}`, {
+export async function deleteTask(taskId: number): Promise<TaskDto> {
+  const data = await apiRequest<TaskResponse>(`/api/tasks/${taskId}`, {
     method: "DELETE",
     fallbackErrorMessage: t("tasks.errors.deleteTask"),
   });
+
+  return data.task;
+}
+
+export async function restoreTask(taskId: number): Promise<TaskDto> {
+  const data = await apiRequest<TaskResponse>(`/api/tasks/${taskId}/restore`, {
+    method: "PATCH",
+    fallbackErrorMessage: t("tasks.errors.restoreTask"),
+  });
+
+  return data.task;
 }

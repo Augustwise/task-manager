@@ -35,6 +35,7 @@ function TasksToolbar({
     { value: "all", label: t("common.all") },
     { value: "active", label: t("common.active") },
     { value: "completed", label: t("common.completed") },
+    { value: "deleted", label: t("common.deleted") },
   ] satisfies ReadonlyArray<{ label: string; value: StatusFilter }>;
 
   return (

@@ -6,7 +6,7 @@ import { useTaskSelection } from "./useTaskSelection";
 export function useTasksPageModel() {
   const queries = useTaskQueries();
   const selection = useTaskSelection({
-    tasks: queries.tasks,
+    tasks: queries.filteredTasks,
     searchQuery: queries.searchQuery,
     priorityFilter: queries.priorityFilter,
     statusFilter: queries.statusFilter,
@@ -71,7 +71,7 @@ export function useTasksPageModel() {
   return {
     isLoading: queries.isLoading,
     error: queries.error,
-    tasks: queries.tasks,
+    tasks: queries.liveTasks,
     completionError: mutations.completionError,
     shareFeedbackMessage: mutations.shareFeedbackMessage,
     openCreateTaskModal: modals.taskModal.openCreateTaskModal,
@@ -92,6 +92,8 @@ export function useTasksPageModel() {
     taskLists: {
       activeTasks: queries.activeTasks,
       completedTasks: queries.completedTasks,
+      deletedTasks: queries.deletedTasks,
+      isDeletedView: queries.statusFilter === "deleted",
       visibleCount: queries.visibleCount,
       pendingTaskIds: mutations.pendingTaskIds,
       selectedTaskIds: selection.selectedTaskIds,
@@ -107,6 +109,8 @@ export function useTasksPageModel() {
       updateSelectedTasksCompletion: mutations.updateSelectedTasksCompletion,
       openBulkDeleteModal,
       updateSelectedTasksPriority: mutations.updateSelectedTasksPriority,
+      restoreTask: mutations.restoreTask,
+      restoreSelectedTasks: mutations.restoreSelectedTasks,
       openEditTaskModal: modals.taskModal.openEditTaskModal,
       openDeleteTaskModal: modals.deleteModal.openDeleteTaskModal,
       shareTask: mutations.shareTask,

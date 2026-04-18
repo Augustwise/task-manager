@@ -73,6 +73,24 @@
     box-shadow: 0 14px 28px rgba(58, 142, 246, 0.12);
   }
 
+  &--deleted {
+    border-color: #e3d6c7;
+    background: linear-gradient(180deg, #fffdfa 0%, #fbf6f0 100%);
+
+    &:hover {
+      border-color: #dcc7ae;
+      background: linear-gradient(180deg, #fffaf5 0%, #f8efe4 100%);
+      box-shadow: 0 14px 28px rgba(160, 110, 48, 0.12);
+    }
+
+    .task-card__controls {
+      padding: 0;
+      border: none;
+      background: none;
+      box-shadow: none;
+    }
+  }
+
   &__checkbox {
     z-index: 1;
     cursor: pointer;
@@ -144,6 +162,10 @@
     &--completed {
       color: palette(text-disabled);
       text-decoration: line-through;
+    }
+
+    &--deleted {
+      color: #6e5b49;
     }
   }
 
@@ -308,6 +330,37 @@
       background: #ffefe1;
       color: #7d4d25;
     }
+  }
+
+  &__action--restore {
+    padding: 0.42rem 0.88rem;
+    border-color: #d8c3a7;
+    background: #fff8ef;
+    color: #8b5e2f;
+    font-size: 0.72rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(160, 110, 48, 0.08);
+
+    &:hover {
+      border-color: #cfa97f;
+      background: #fff1de;
+      color: #75491f;
+    }
+  }
+
+  &__archive-badge {
+    @include pill(0.22rem, 0.7rem);
+    border: 1px solid #dfc6a6;
+    background: #fff4e7;
+    color: #9b6127;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  &__archive-note {
+    color: #8e6b48;
+    font-size: 0.76rem;
+    font-weight: 600;
   }
 
   &__share-badge {

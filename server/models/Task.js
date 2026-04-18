@@ -42,6 +42,10 @@ const Task = sequelize.define(
       allowNull: false,
       defaultValue: false,
     },
+    deleted_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     share_token: {
       type: DataTypes.STRING(64),
       allowNull: true,

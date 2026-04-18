@@ -1,12 +1,44 @@
 const Task = require("../models/Task");
 const Subtask = require("../models/Subtask");
 const { getNextOccurrence } = require("../utils/recurrence");
+const { Op } = require("sequelize");
 
-function findTasksByUserId(userId) {
+const ARCHIVE_RETENTION_DAYS = 7;
+const ARCHIVE_RETENTION_MS = ARCHIVE_RETENTION_DAYS * 24 * 60 * 60 * 1000; // 7 days
+
+function getArchiveCutoff() {
+  return new Date(Date.now() - ARCHIVE_RETENTION_MS);
+}
+
+function getActiveTaskWhereClause(userId) {
+  return {
+    user_id: userId,
+    deleted_at: null,
+  };
+}
+
+async function purgeExpiredDeletedTasks(userId) {
+  const where = {
+    deleted_at: {
+      [Op.lt]: getArchiveCutoff(),
+    },
+  };
+
+  if (userId !== undefined) {
+    where.user_id = userId;
+  }
+
+  await Task.destroy({ where });
+}
+
+async function findTasksByUserId(userId) {
+  await purgeExpiredDeletedTasks(userId);
+
   return Task.findAll({
     where: { user_id: userId },
     include: [{ model: Subtask, as: "subtasks" }],
     order: [
+      ["deleted_at", "DESC"],
       ["completed", "ASC"],
       ["due_date", "ASC"],
       ["id", "ASC"],
@@ -68,7 +100,7 @@ async function updateTask(
     await Subtask.destroy({
       where: {
         task_id: task.id,
-        ...(incomingIds.length > 0 ? { id: { [require("sequelize").Op.notIn]: incomingIds } } : {}),
+        ...(incomingIds.length > 0 ? { id: { [Op.notIn]: incomingIds } } : {}),
       },
     });
 
@@ -89,18 +121,29 @@ async function updateTask(
 }
 
 function findTaskByIdForUser(taskId, userId) {
+  return findTaskByIdForUserWithOptions(taskId, userId);
+}
+
+async function findTaskByIdForUserWithOptions(taskId, userId, { includeDeleted = true } = {}) {
+  await purgeExpiredDeletedTasks(userId);
+
   return Task.findOne({
     where: {
       id: taskId,
-      user_id: userId,
+      ...(includeDeleted ? { user_id: userId } : getActiveTaskWhereClause(userId)),
     },
     include: [{ model: Subtask, as: "subtasks" }],
   });
 }
 
-function findTaskByShareToken(shareToken) {
+async function findTaskByShareToken(shareToken) {
+  await purgeExpiredDeletedTasks();
+
   return Task.findOne({
-    where: { share_token: shareToken },
+    where: {
+      share_token: shareToken,
+      deleted_at: null,
+    },
     include: [{ model: Subtask, as: "subtasks" }],
   });
 }
@@ -109,7 +152,8 @@ function findTaskByShareTokenForOtherTask(shareToken, taskId) {
   return Task.findOne({
     where: {
       share_token: shareToken,
-      id: { [require("sequelize").Op.ne]: taskId },
+      id: { [Op.ne]: taskId },
+      deleted_at: null,
     },
   });
 }
@@ -150,16 +194,26 @@ async function setTaskShareToken(task, shareToken) {
 }
 
 async function deleteTask(task) {
-  await task.destroy();
+  task.deleted_at = new Date();
+  await task.save();
+  return findTaskByIdForUser(task.id, task.user_id);
+}
+
+async function restoreTask(task) {
+  task.deleted_at = null;
+  await task.save();
+  return findTaskByIdForUser(task.id, task.user_id);
 }
 
 module.exports = {
   createTask,
   deleteTask,
   findTaskByIdForUser,
+  findTaskByIdForUserWithOptions,
   findTaskByShareToken,
   findTaskByShareTokenForOtherTask,
   findTasksByUserId,
+  restoreTask,
   setTaskShareToken,
   updateTask,
   updateTaskCompletion,

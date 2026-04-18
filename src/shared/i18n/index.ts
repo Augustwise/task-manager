@@ -74,6 +74,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       loading: "Loading...",
       active: "Active",
       completed: "Completed",
+      deleted: "Deleted",
       all: "All",
       inProgress: "In progress",
       requestFailed: "Request failed",
@@ -212,6 +213,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         revokeLinkAriaLabel: "Revoke shared task link",
         editTaskAriaLabel: "Edit task",
         deleteTaskAriaLabel: "Delete task",
+        restoreTaskAriaLabel: "Restore task",
+        restoreTaskLabel: "Restore",
         markTaskAriaLabel: (params) =>
           `Mark ${getText(params, "title")} as ${params.completed ? "incomplete" : "completed"}`,
         toggleSelectionAriaLabel: (params) =>
@@ -229,6 +232,9 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         daily: "Daily",
         weekly: "Weekly",
         monthly: "Monthly",
+      },
+      archive: {
+        restorableUntil: (params) => `Restorable until ${getText(params, "date")}`,
       },
       modal: {
         newTitle: "New task",
@@ -257,8 +263,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         bulkTitle: "Delete tasks?",
         confirmBefore: "Are you sure you want to delete",
         confirmMany: (params) =>
-          `Are you sure you want to delete ${pluralizeEnglish(getCount(params), "task", "tasks")}? This action cannot be undone.`,
-        confirmAfter: "This action cannot be undone.",
+          `Are you sure you want to delete ${pluralizeEnglish(getCount(params), "task", "tasks")}? You can restore them from Deleted for 7 days.`,
+        confirmAfter: "You can restore it from Deleted for 7 days.",
         deleting: "Deleting...",
         deletingSelected: "Deleting selected...",
         delete: "Delete",
@@ -270,6 +276,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         complete: "Complete",
         activate: "Move to active",
         delete: "Delete",
+        restore: "Restore",
         priority: "Priority",
         choosePriority: "Choose priority",
         applyPriority: "Apply priority",
@@ -282,6 +289,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
           `Failed to update priority for ${pluralizeEnglish(getCount(params), "task", "tasks")}.`,
         deletePartialFailure: (params) =>
           `Failed to delete ${pluralizeEnglish(getCount(params), "task", "tasks")}.`,
+        restorePartialFailure: (params) =>
+          `Failed to restore ${pluralizeEnglish(getCount(params), "task", "tasks")}.`,
       },
       error: {
         title: "Could not update task",
@@ -313,6 +322,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         updateTask: "Failed to update task",
         updateSubtask: "Failed to update subtask",
         deleteTask: "Failed to delete task",
+        restoreTask: "Failed to restore task",
       },
       dashboard: {
         priorityBreakdown: "Priority Breakdown",
@@ -369,6 +379,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       loading: "Загрузка...",
       active: "Активные",
       completed: "Выполненные",
+      deleted: "Удаленные",
       all: "Все",
       inProgress: "В процессе",
       requestFailed: "Не удалось выполнить запрос",
@@ -508,6 +519,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         revokeLinkAriaLabel: "Отозвать общую ссылку на задачу",
         editTaskAriaLabel: "Редактировать задачу",
         deleteTaskAriaLabel: "Удалить задачу",
+        restoreTaskAriaLabel: "Восстановить задачу",
+        restoreTaskLabel: "Восстановить",
         markTaskAriaLabel: (params) =>
           `Отметить "${getText(params, "title")}" как ${
             params.completed ? "невыполненную" : "выполненную"
@@ -528,6 +541,9 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         daily: "Ежедневно",
         weekly: "Еженедельно",
         monthly: "Ежемесячно",
+      },
+      archive: {
+        restorableUntil: (params) => `Можно восстановить до ${getText(params, "date")}`,
       },
       modal: {
         newTitle: "Новая задача",
@@ -557,8 +573,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         bulkTitle: "Удалить задачи?",
         confirmBefore: "Вы уверены, что хотите удалить",
         confirmMany: (params) =>
-          `Вы уверены, что хотите удалить ${pluralizeSlavic(getCount(params), "задачу", "задачи", "задач")}? Это действие нельзя отменить.`,
-        confirmAfter: "Это действие нельзя отменить.",
+          `Вы уверены, что хотите удалить ${pluralizeSlavic(getCount(params), "задачу", "задачи", "задач")}? Их можно восстановить в разделе "Удаленные" в течение 7 дней.`,
+        confirmAfter: 'Ее можно восстановить в разделе "Удаленные" в течение 7 дней.',
         deleting: "Удаление...",
         deletingSelected: "Удаление выбранного...",
         delete: "Удалить",
@@ -570,6 +586,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         complete: "Завершить",
         activate: "Вернуть в активные",
         delete: "Удалить",
+        restore: "Восстановить",
         priority: "Приоритет",
         choosePriority: "Выберите приоритет",
         applyPriority: "Применить приоритет",
@@ -582,6 +599,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
           `Не удалось обновить приоритет для ${pluralizeSlavic(getCount(params), "задачи", "задач", "задач")}.`,
         deletePartialFailure: (params) =>
           `Не удалось удалить ${pluralizeSlavic(getCount(params), "задачу", "задачи", "задач")}.`,
+        restorePartialFailure: (params) =>
+          `Не удалось восстановить ${pluralizeSlavic(getCount(params), "задачу", "задачи", "задач")}.`,
       },
       error: {
         title: "Не удалось обновить задачу",
@@ -614,6 +633,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         updateTask: "Не удалось обновить задачу",
         updateSubtask: "Не удалось обновить подзадачу",
         deleteTask: "Не удалось удалить задачу",
+        restoreTask: "Не удалось восстановить задачу",
       },
       dashboard: {
         priorityBreakdown: "Приоритеты",
@@ -670,6 +690,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       loading: "Завантаження...",
       active: "Активні",
       completed: "Виконані",
+      deleted: "Видалені",
       all: "Усі",
       inProgress: "У процесі",
       requestFailed: "Запит не вдався",
@@ -808,6 +829,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         revokeLinkAriaLabel: "Скасувати спільне посилання на завдання",
         editTaskAriaLabel: "Редагувати завдання",
         deleteTaskAriaLabel: "Видалити завдання",
+        restoreTaskAriaLabel: "Відновити завдання",
+        restoreTaskLabel: "Відновити",
         markTaskAriaLabel: (params) =>
           `Позначити "${getText(params, "title")}" як ${
             params.completed ? "невиконане" : "виконане"
@@ -828,6 +851,9 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         daily: "Щодня",
         weekly: "Щотижня",
         monthly: "Щомісяця",
+      },
+      archive: {
+        restorableUntil: (params) => `Можна відновити до ${getText(params, "date")}`,
       },
       modal: {
         newTitle: "Нове завдання",
@@ -857,8 +883,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         bulkTitle: "Видалити завдання?",
         confirmBefore: "Ви впевнені, що хочете видалити",
         confirmMany: (params) =>
-          `Ви впевнені, що хочете видалити ${pluralizeSlavic(getCount(params), "завдання", "завдання", "завдань")}? Цю дію неможливо скасувати.`,
-        confirmAfter: "Цю дію неможливо скасувати.",
+          `Ви впевнені, що хочете видалити ${pluralizeSlavic(getCount(params), "завдання", "завдання", "завдань")}? Їх можна відновити в розділі "Видалені" протягом 7 днів.`,
+        confirmAfter: 'Його можна відновити в розділі "Видалені" протягом 7 днів.',
         deleting: "Видалення...",
         deletingSelected: "Видалення вибраного...",
         delete: "Видалити",
@@ -870,6 +896,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         complete: "Завершити",
         activate: "Повернути в активні",
         delete: "Видалити",
+        restore: "Відновити",
         priority: "Пріоритет",
         choosePriority: "Оберіть пріоритет",
         applyPriority: "Застосувати пріоритет",
@@ -882,6 +909,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
           `Не вдалося оновити пріоритет для ${pluralizeSlavic(getCount(params), "завдання", "завдань", "завдань")}.`,
         deletePartialFailure: (params) =>
           `Не вдалося видалити ${pluralizeSlavic(getCount(params), "завдання", "завдання", "завдань")}.`,
+        restorePartialFailure: (params) =>
+          `Не вдалося відновити ${pluralizeSlavic(getCount(params), "завдання", "завдання", "завдань")}.`,
       },
       error: {
         title: "Не вдалося оновити завдання",
@@ -914,6 +943,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         updateTask: "Не вдалося оновити завдання",
         updateSubtask: "Не вдалося оновити підзавдання",
         deleteTask: "Не вдалося видалити завдання",
+        restoreTask: "Не вдалося відновити завдання",
       },
       dashboard: {
         priorityBreakdown: "Пріоритети",
