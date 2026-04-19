@@ -85,6 +85,10 @@ function sortTasks(tasks: TaskDto[], sortBy: SortOption, statusFilter: StatusFil
       );
     }
 
+    if (sortBy === "manual") {
+      return left.position - right.position || left.id - right.id;
+    }
+
     if (sortBy === "priority") {
       return (
         PRIORITY_ORDER[left.priority] - PRIORITY_ORDER[right.priority] ||

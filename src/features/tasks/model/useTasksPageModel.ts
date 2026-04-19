@@ -104,6 +104,7 @@ export function useTasksPageModel() {
       isBulkActionPending: mutations.bulkAction !== null,
       toggleTaskCompletion: mutations.toggleTaskCompletion,
       toggleSubtaskCompletion: mutations.toggleSubtaskCompletion,
+      reorderTasks: mutations.reorderTasks,
       onTaskSelectionChange: selection.onTaskSelectionChange,
       clearSelection: selection.clearSelection,
       updateSelectedTasksCompletion: mutations.updateSelectedTasksCompletion,

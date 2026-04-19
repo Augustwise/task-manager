@@ -1,5 +1,6 @@
 const Task = require("../models/Task");
 const Subtask = require("../models/Subtask");
+const sequelize = require("../db");
 const { getNextOccurrence } = require("../utils/recurrence");
 const { Op } = require("sequelize");
 
@@ -40,10 +41,20 @@ async function findTasksByUserId(userId) {
     order: [
       ["deleted_at", "DESC"],
       ["completed", "ASC"],
-      ["due_date", "ASC"],
+      ["position", "ASC"],
       ["id", "ASC"],
     ],
   });
+}
+
+async function getNextPositionForUser(userId) {
+  const maxPosition = await Task.max("position", { where: { user_id: userId } });
+
+  if (typeof maxPosition !== "number" || Number.isNaN(maxPosition)) {
+    return 0;
+  }
+
+  return maxPosition + 1;
 }
 
 async function createTask({
@@ -57,6 +68,7 @@ async function createTask({
   recurrenceEndDate = null,
   subtasks = [],
 }) {
+  const position = await getNextPositionForUser(userId);
   const task = await Task.create({
     user_id: userId,
     title,
@@ -66,6 +78,7 @@ async function createTask({
     tag,
     recurrence,
     recurrence_end_date: recurrenceEndDate,
+    position,
   });
 
   if (subtasks.length > 0) {
@@ -205,6 +218,26 @@ async function restoreTask(task) {
   return findTaskByIdForUser(task.id, task.user_id);
 }
 
+async function reorderTasks(userId, orderedTaskIds) {
+  const ownedTasks = await Task.findAll({
+    where: { user_id: userId, id: orderedTaskIds },
+    attributes: ["id"],
+  });
+  const ownedIds = new Set(ownedTasks.map((task) => task.id));
+  const validOrderedIds = orderedTaskIds.filter((id) => ownedIds.has(id));
+
+  await sequelize.transaction(async (transaction) => {
+    await Promise.all(
+      validOrderedIds.map((taskId, index) =>
+        Task.update(
+          { position: index },
+          { where: { id: taskId, user_id: userId }, transaction },
+        ),
+      ),
+    );
+  });
+}
+
 module.exports = {
   createTask,
   deleteTask,
@@ -213,6 +246,7 @@ module.exports = {
   findTaskByShareToken,
   findTaskByShareTokenForOtherTask,
   findTasksByUserId,
+  reorderTasks,
   restoreTask,
   setTaskShareToken,
   updateTask,

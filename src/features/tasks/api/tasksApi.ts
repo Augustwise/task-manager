@@ -108,3 +108,13 @@ export async function restoreTask(taskId: number): Promise<TaskDto> {
 
   return data.task;
 }
+
+export async function reorderTasks(taskIds: number[]): Promise<TaskDto[]> {
+  const data = await apiRequest<TasksResponse>("/api/tasks/reorder", {
+    method: "PATCH",
+    body: { taskIds },
+    fallbackErrorMessage: t("tasks.errors.reorderTasks"),
+  });
+
+  return data.tasks;
+}

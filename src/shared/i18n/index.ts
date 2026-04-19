@@ -181,6 +181,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       toolbar: {
         newTask: "New task",
         sortOptions: {
+          manual: "Manual",
           dueDate: "Due date",
           priority: "Priority",
           created: "Created",
@@ -215,6 +216,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         deleteTaskAriaLabel: "Delete task",
         restoreTaskAriaLabel: "Restore task",
         restoreTaskLabel: "Restore",
+        dragHandleAriaLabel: (params) => `Reorder task "${getText(params, "title")}"`,
         markTaskAriaLabel: (params) =>
           `Mark ${getText(params, "title")} as ${params.completed ? "incomplete" : "completed"}`,
         toggleSelectionAriaLabel: (params) =>
@@ -323,6 +325,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         updateSubtask: "Failed to update subtask",
         deleteTask: "Failed to delete task",
         restoreTask: "Failed to restore task",
+        reorderTasks: "Failed to reorder tasks",
       },
       dashboard: {
         priorityBreakdown: "Priority Breakdown",
@@ -487,6 +490,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       toolbar: {
         newTask: "Новая задача",
         sortOptions: {
+          manual: "Вручную",
           dueDate: "По сроку",
           priority: "По приоритету",
           created: "По дате создания",
@@ -521,6 +525,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         deleteTaskAriaLabel: "Удалить задачу",
         restoreTaskAriaLabel: "Восстановить задачу",
         restoreTaskLabel: "Восстановить",
+        dragHandleAriaLabel: (params) =>
+          `Переместить задачу "${getText(params, "title")}"`,
         markTaskAriaLabel: (params) =>
           `Отметить "${getText(params, "title")}" как ${
             params.completed ? "невыполненную" : "выполненную"
@@ -634,6 +640,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         updateSubtask: "Не удалось обновить подзадачу",
         deleteTask: "Не удалось удалить задачу",
         restoreTask: "Не удалось восстановить задачу",
+        reorderTasks: "Не удалось изменить порядок задач",
       },
       dashboard: {
         priorityBreakdown: "Приоритеты",
@@ -797,6 +804,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       toolbar: {
         newTask: "Нове завдання",
         sortOptions: {
+          manual: "Вручну",
           dueDate: "За терміном",
           priority: "За пріоритетом",
           created: "За датою створення",
@@ -831,6 +839,8 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         deleteTaskAriaLabel: "Видалити завдання",
         restoreTaskAriaLabel: "Відновити завдання",
         restoreTaskLabel: "Відновити",
+        dragHandleAriaLabel: (params) =>
+          `Перемістити завдання "${getText(params, "title")}"`,
         markTaskAriaLabel: (params) =>
           `Позначити "${getText(params, "title")}" як ${
             params.completed ? "невиконане" : "виконане"
@@ -944,6 +954,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
         updateSubtask: "Не вдалося оновити підзавдання",
         deleteTask: "Не вдалося видалити завдання",
         restoreTask: "Не вдалося відновити завдання",
+        reorderTasks: "Не вдалося змінити порядок завдань",
       },
       dashboard: {
         priorityBreakdown: "Пріоритети",

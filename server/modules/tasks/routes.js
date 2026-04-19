@@ -9,6 +9,7 @@ const {
   findTaskByShareToken,
   findTaskByShareTokenForOtherTask,
   findTasksByUserId,
+  reorderTasks,
   restoreTask,
   setTaskShareToken,
   updateTask,
@@ -20,6 +21,7 @@ const { serializeTask } = require("../../utils/serializeTask");
 const { AUTH_MESSAGES } = require("../../validators/authValidator");
 const {
   validateCreateTaskPayload,
+  validateReorderPayload,
   validateTaskCompletionPayload,
 } = require("../../validators/taskValidator");
 
@@ -109,6 +111,23 @@ router.post("/tasks", taskCreationLimiter, async (req, res) => {
     });
 
     return res.status(201).json({ task: serializeTask(task) });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: AUTH_MESSAGES.serverError });
+  }
+});
+
+router.patch("/tasks/reorder", async (req, res) => {
+  try {
+    const result = validateReorderPayload(req.body);
+    if (result.error) {
+      return res.status(400).json({ error: result.error });
+    }
+
+    await reorderTasks(req.user.id, result.value.taskIds);
+    const tasks = await findTasksByUserId(req.user.id);
+
+    return res.json({ tasks: tasks.map(serializeTask) });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: AUTH_MESSAGES.serverError });

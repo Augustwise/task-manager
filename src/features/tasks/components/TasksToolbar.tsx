@@ -21,6 +21,7 @@ function TasksToolbar({
 }: TasksToolbarProps) {
   const { t } = useI18n();
   const sortOptions = [
+    { value: "manual", label: t("tasks.toolbar.sortOptions.manual") },
     { value: "due-date", label: t("tasks.toolbar.sortOptions.dueDate") },
     { value: "priority", label: t("tasks.toolbar.sortOptions.priority") },
     { value: "created", label: t("tasks.toolbar.sortOptions.created") },

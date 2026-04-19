@@ -22,6 +22,7 @@ export interface TaskDto {
   shareToken: string | null;
   recurrence: Recurrence;
   recurrenceEndDate: string;
+  position: number;
   subtasks: SubtaskDto[];
 }
 

@@ -1,7 +1,7 @@
 import type { CreateTaskDto, Priority, TaskDto } from "../../../shared/types";
 import type { useTasksPageModel } from "../model/useTasksPageModel";
 
-export type SortOption = "due-date" | "priority" | "created";
+export type SortOption = "manual" | "due-date" | "priority" | "created";
 export type StatusFilter = "all" | "active" | "completed" | "deleted";
 export type PriorityFilter = "all" | Priority;
 export type BulkAction = "complete" | "delete" | "priority" | "restore" | null;

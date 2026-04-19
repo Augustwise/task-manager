@@ -1,5 +1,7 @@
 import classNames from "classnames";
 import { Checkbox } from "@mui/material";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import editIcon from "../../../assets/icon-edit.svg";
 import recurrenceIcon from "../../../assets/icon-recurrence.svg";
 import sharePrivateIcon from "../../../assets/icon-share-private.svg";
@@ -74,6 +76,7 @@ function TaskCard({
   isUpdating,
   checkboxMode,
   isSelected = false,
+  dragEnabled = false,
   onCompletionChange,
   onSelectionChange,
   onSubtaskCompletionChange,
@@ -108,15 +111,43 @@ function TaskCard({
         title: task.title,
         completed: task.completed,
       });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id, disabled: !dragEnabled || isUpdating });
+  const dragStyle: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   return (
     <div
+      ref={setNodeRef}
+      style={dragEnabled ? dragStyle : undefined}
       className={classNames("task-card", {
         "task-card--deleted": isDeleted,
         "task-card--selected": isSelected,
         "task-card--updating": isUpdating,
+        "task-card--draggable": dragEnabled,
+        "task-card--dragging": isDragging,
       })}
     >
+      {dragEnabled ? (
+        <button
+          type="button"
+          className="task-card__drag-handle"
+          aria-label={t("tasks.card.dragHandleAriaLabel", { title: task.title })}
+          disabled={isUpdating}
+          {...attributes}
+          {...listeners}
+        >
+          <span aria-hidden="true" className="task-card__drag-handle-dots" />
+        </button>
+      ) : null}
       <Checkbox
         className="task-card__checkbox"
         checked={checkboxChecked}
@@ -135,7 +166,7 @@ function TaskCard({
         sx={{
           position: "absolute",
           top: 12,
-          left: 12,
+          left: dragEnabled ? "2.25rem" : 12,
           padding: "4px",
           color: "rgba(58, 142, 246, 0.45)",
           "&.Mui-checked": {

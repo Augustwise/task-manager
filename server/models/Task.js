@@ -62,6 +62,11 @@ const Task = sequelize.define(
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
+    position: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
   },
   {
     tableName: "tasks",

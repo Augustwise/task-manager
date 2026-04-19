@@ -78,7 +78,34 @@ function validateTaskCompletionPayload(payload) {
   };
 }
 
+function validateReorderPayload(payload) {
+  if (!payload || !Array.isArray(payload.taskIds)) {
+    return { error: "taskIds must be an array" };
+  }
+
+  const taskIds = [];
+  const seen = new Set();
+
+  for (const rawId of payload.taskIds) {
+    const id = typeof rawId === "number" ? rawId : Number.parseInt(rawId, 10);
+
+    if (!Number.isInteger(id) || id <= 0) {
+      return { error: "taskIds must contain positive integers" };
+    }
+
+    if (seen.has(id)) {
+      return { error: "taskIds must not contain duplicates" };
+    }
+
+    seen.add(id);
+    taskIds.push(id);
+  }
+
+  return { value: { taskIds } };
+}
+
 module.exports = {
   validateCreateTaskPayload,
+  validateReorderPayload,
   validateTaskCompletionPayload,
 };

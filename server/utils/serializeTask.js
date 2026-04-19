@@ -18,6 +18,7 @@ function serializeTask(task) {
     shareToken: task.share_token ?? task.shareToken ?? null,
     recurrence: task.recurrence ?? "none",
     recurrenceEndDate: task.recurrence_end_date ?? task.recurrenceEndDate ?? "",
+    position: task.position ?? 0,
     subtasks: (task.subtasks ?? []).map((s) => ({
       id: s.id,
       title: s.title,

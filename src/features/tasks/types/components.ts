@@ -29,6 +29,7 @@ export interface TaskCardProps {
   readonly isUpdating: boolean;
   readonly checkboxMode: TaskCardCheckboxMode;
   readonly isSelected?: boolean;
+  readonly dragEnabled?: boolean;
   readonly onCompletionChange: (taskId: number, completed: boolean) => void;
   readonly onSelectionChange?: (taskId: number, selected: boolean) => void;
   readonly onSubtaskCompletionChange: (taskId: number, subtaskId: number, completed: boolean) => void;
@@ -61,6 +62,7 @@ export interface TaskListSectionProps {
   readonly tasks: readonly TaskDto[];
   readonly pendingTaskIds: readonly number[];
   readonly selectedTaskIds: readonly number[];
+  readonly dragEnabled?: boolean;
   readonly onTaskCompletionChange: (taskId: number, completed: boolean) => void;
   readonly onTaskSelectionChange: (taskId: number, selected: boolean) => void;
   readonly onSubtaskCompletionChange: (taskId: number, subtaskId: number, completed: boolean) => void;
@@ -69,6 +71,7 @@ export interface TaskListSectionProps {
   readonly onTaskRestoreClick?: (task: TaskDto) => void;
   readonly onTaskShareClick: (task: TaskDto) => void;
   readonly onTaskShareRevokeClick: (task: TaskDto) => void;
+  readonly onTaskReorder?: (orderedTaskIds: number[]) => void;
 }
 
 

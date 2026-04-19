@@ -11,6 +11,7 @@ import type { TasksListViewProps } from "../types/components";
 function TasksListView({ model }: TasksListViewProps) {
   const { t } = useI18n();
   const isDeletedView = model.taskLists.isDeletedView;
+  const dragEnabled = model.toolbar.sortBy === "manual" && !isDeletedView;
   const clearSelectionOnUnmount = useEffectEvent(() => {
     model.taskLists.clearSelection();
   });
@@ -61,6 +62,7 @@ function TasksListView({ model }: TasksListViewProps) {
             tasks={model.taskLists.activeTasks}
             pendingTaskIds={model.taskLists.pendingTaskIds}
             selectedTaskIds={model.taskLists.selectedTaskIds}
+            dragEnabled={dragEnabled}
             onTaskCompletionChange={model.taskLists.toggleTaskCompletion}
             onTaskSelectionChange={model.taskLists.onTaskSelectionChange}
             onSubtaskCompletionChange={model.taskLists.toggleSubtaskCompletion}
@@ -68,12 +70,19 @@ function TasksListView({ model }: TasksListViewProps) {
             onTaskDeleteClick={model.taskLists.openDeleteTaskModal}
             onTaskShareClick={model.taskLists.shareTask}
             onTaskShareRevokeClick={model.taskLists.revokeTaskShare}
+            onTaskReorder={(orderedIds) => {
+              void model.taskLists.reorderTasks([
+                ...orderedIds,
+                ...model.taskLists.completedTasks.map((task) => task.id),
+              ]);
+            }}
           />
           <TaskListSection
             title={t("common.completed")}
             tasks={model.taskLists.completedTasks}
             pendingTaskIds={model.taskLists.pendingTaskIds}
             selectedTaskIds={model.taskLists.selectedTaskIds}
+            dragEnabled={dragEnabled}
             onTaskCompletionChange={model.taskLists.toggleTaskCompletion}
             onTaskSelectionChange={model.taskLists.onTaskSelectionChange}
             onSubtaskCompletionChange={model.taskLists.toggleSubtaskCompletion}
@@ -81,6 +90,12 @@ function TasksListView({ model }: TasksListViewProps) {
             onTaskDeleteClick={model.taskLists.openDeleteTaskModal}
             onTaskShareClick={model.taskLists.shareTask}
             onTaskShareRevokeClick={model.taskLists.revokeTaskShare}
+            onTaskReorder={(orderedIds) => {
+              void model.taskLists.reorderTasks([
+                ...model.taskLists.activeTasks.map((task) => task.id),
+                ...orderedIds,
+              ]);
+            }}
           />
         </>
       )}

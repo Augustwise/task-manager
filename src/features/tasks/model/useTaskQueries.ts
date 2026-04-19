@@ -7,14 +7,47 @@ import { getTaskSummary } from "../lib/getTaskSummary";
 import type { PriorityFilter, SortOption, StatusFilter } from "../types/model";
 import { getFilteredTasks } from "./taskFilters";
 
+const SORT_BY_STORAGE_KEY = "tasks.sortBy";
+const SORT_OPTION_VALUES: ReadonlySet<SortOption> = new Set([
+  "manual",
+  "due-date",
+  "priority",
+  "created",
+]);
+
+function readStoredSortBy(): SortOption {
+  if (typeof window === "undefined") {
+    return "due-date";
+  }
+
+  const stored = window.localStorage.getItem(SORT_BY_STORAGE_KEY);
+
+  return stored && SORT_OPTION_VALUES.has(stored as SortOption)
+    ? (stored as SortOption)
+    : "due-date";
+}
+
+function persistSortBy(value: SortOption) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.setItem(SORT_BY_STORAGE_KEY, value);
+}
+
 export function useTaskQueries() {
   const [tasks, setTasks] = useState<TaskDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("due-date");
+  const [sortBy, setSortByState] = useState<SortOption>(readStoredSortBy);
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+
+  function setSortBy(value: SortOption) {
+    persistSortBy(value);
+    setSortByState(value);
+  }
 
   useEffect(() => {
     let isMounted = true;

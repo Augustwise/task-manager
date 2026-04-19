@@ -5,6 +5,7 @@ import {
   createShareLink,
   createTask,
   deleteTask,
+  reorderTasks as apiReorderTasks,
   restoreTask as apiRestoreTask,
   revokeShareLink,
   toggleSubtaskCompletion as apiToggleSubtaskCompletion,
@@ -410,6 +411,29 @@ export function useTaskMutations({
     );
   }
 
+  async function reorderTasks(orderedTaskIds: number[]) {
+    const previousTasks = tasks;
+    const positionByTaskId = new Map(orderedTaskIds.map((id, index) => [id, index]));
+
+    setTasks((currentTasks) =>
+      currentTasks.map((task) => {
+        const nextPosition = positionByTaskId.get(task.id);
+
+        return nextPosition === undefined ? task : { ...task, position: nextPosition };
+      }),
+    );
+
+    try {
+      const nextTasks = await apiReorderTasks(orderedTaskIds);
+
+      setTasks(nextTasks);
+      setCompletionError(null);
+    } catch (err) {
+      setTasks(previousTasks);
+      setCompletionError(err instanceof Error ? err.message : t("tasks.errors.reorderTasks"));
+    }
+  }
+
   async function confirmTaskDelete() {
     if (!deleteModal.deleteTarget) {
       return;
@@ -461,6 +485,7 @@ export function useTaskMutations({
     revokeTaskShare,
     restoreTask,
     restoreSelectedTasks,
+    reorderTasks,
     confirmTaskDelete,
   };
 }
