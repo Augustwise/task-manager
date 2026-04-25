@@ -1,6 +1,9 @@
 /**
- * Seed script: creates a test user with 20 tasks + subtasks.
- * Run: node server/seed-mock-data.js
+ * Seed script: creates one mock user with 15 tasks + subtasks.
+ *
+ * Current mock date baseline: 2026-04-25.
+ * Run manually from the repository root:
+ *   node server/seed-mock-data.js
  */
 
 require("dotenv").config();
@@ -9,295 +12,266 @@ const sequelize = require("./db");
 const User = require("./models/User");
 const Task = require("./models/Task");
 const Subtask = require("./models/Subtask");
+const { runMigrations } = require("./migrations");
 
-const TEST_USER = {
-  email: "testuser@example.com",
-  password: "Test1234!43r4edew3++3c",
+const MOCK_USER = {
+  email: "mock.user.20262@example.com",
+  password: "MockUser20262233ggs!",
 };
 
 const TASKS = [
   {
-    title: "Подготовить презентацию для клиента",
-    description: "Собрать ключевые метрики за Q1, оформить слайды и согласовать с командой перед отправкой.",
+    title: "Triage incoming tasks after the weekend",
+    description: "Review new requests, mark urgent items, and organize everything by priority.",
     priority: "high",
-    due_date: "2026-04-15",
-    tag: "Planning",
-    completed: false,
-    subtasks: [
-      { title: "Собрать данные по метрикам", completed: true },
-      { title: "Сделать черновик слайдов", completed: false },
-      { title: "Ревью от тимлида", completed: false },
-    ],
-  },
-  {
-    title: "Исправить баг с фильтрацией задач",
-    description: "При выборе тега 'Operations' список не обновляется до перезагрузки страницы.",
-    priority: "high",
-    due_date: "2026-04-16",
-    tag: "Frontend",
-    completed: false,
-    subtasks: [
-      { title: "Воспроизвести баг", completed: true },
-      { title: "Найти причину в коде", completed: false },
-      { title: "Написать фикс и протестировать", completed: false },
-    ],
-  },
-  {
-    title: "Обновить зависимости проекта",
-    description: "Проверить npm audit, обновить пакеты с критическими уязвимостями.",
-    priority: "medium",
-    due_date: "2026-04-17",
-    tag: "Operations",
-    completed: false,
-    subtasks: [
-      { title: "Запустить npm audit", completed: false },
-      { title: "Обновить критичные пакеты", completed: false },
-    ],
-  },
-  {
-    title: "Написать юнит-тесты для авторизации",
-    description: "Покрыть тестами регистрацию, логин и валидацию сессий.",
-    priority: "high",
-    due_date: "2026-04-18",
-    tag: "QA",
-    completed: false,
-    subtasks: [
-      { title: "Тест регистрации", completed: false },
-      { title: "Тест логина", completed: false },
-      { title: "Тест невалидного токена", completed: false },
-    ],
-  },
-  {
-    title: "Созвон с дизайнером по новому layout",
-    description: "",
-    priority: "medium",
-    due_date: "2026-04-15",
-    tag: "Team",
-    completed: false,
-    subtasks: [],
-  },
-  {
-    title: "Настроить CI/CD пайплайн",
-    description: "Добавить автоматический запуск тестов и деплой на staging при пуше в develop.",
-    priority: "high",
-    due_date: "2026-04-20",
-    tag: "Operations",
-    completed: false,
-    subtasks: [
-      { title: "Написать GitHub Actions workflow", completed: false },
-      { title: "Настроить staging сервер", completed: false },
-      { title: "Проверить деплой", completed: false },
-    ],
-  },
-  {
-    title: "Ревью pull request #42",
-    description: "Проверить рефакторинг компонента TaskList — коллега переписал на хуки.",
-    priority: "medium",
-    due_date: "2026-04-16",
-    tag: "Frontend",
-    completed: false,
-    subtasks: [
-      { title: "Прочитать описание PR", completed: true },
-      { title: "Проверить код", completed: false },
-      { title: "Оставить комментарии", completed: false },
-    ],
-  },
-  {
-    title: "Оплатить счёт за хостинг",
-    description: "Счёт от провайдера за апрель, дедлайн — 19 число.",
-    priority: "high",
-    due_date: "2026-04-19",
-    tag: "Finance",
-    completed: false,
-    subtasks: [],
-  },
-  {
-    title: "Подготовить отчёт по спринту",
-    description: "Собрать статистику закрытых задач и velocity за последние две недели.",
-    priority: "medium",
     due_date: "2026-04-21",
     tag: "Planning",
     completed: false,
     subtasks: [
-      { title: "Экспорт данных из трекера", completed: false },
-      { title: "Посчитать velocity", completed: false },
-      { title: "Оформить отчёт", completed: false },
+      { title: "Review new requests", completed: true },
+      { title: "Flag blockers", completed: false },
+      { title: "Plan quick fixes", completed: false },
     ],
   },
   {
-    title: "Обновить документацию API",
-    description: "Добавить описание новых эндпоинтов для подзадач и шаринга задач.",
-    priority: "low",
+    title: "Pay service invoices for April",
+    description: "Check invoices for hosting, the domain, and the email service.",
+    priority: "high",
+    due_date: "2026-04-22",
+    tag: "Finance",
+    completed: false,
+    subtasks: [
+      { title: "Verify invoice totals", completed: false },
+      { title: "Pay the hosting bill", completed: false },
+    ],
+  },
+  {
+    title: "Close leftover tasks from the previous sprint",
+    description: "Move relevant tasks into the new sprint and close the rest with comments.",
+    priority: "medium",
     due_date: "2026-04-23",
+    tag: "Team",
+    completed: true,
+    subtasks: [
+      { title: "Review open cards", completed: true },
+      { title: "Update statuses", completed: true },
+    ],
+  },
+  {
+    title: "Prepare demo notes",
+    description: "Collect the list of changes, risks, and questions for the team.",
+    priority: "medium",
+    due_date: "2026-04-24",
     tag: "Docs",
     completed: false,
     subtasks: [
-      { title: "Задокументировать /subtasks", completed: false },
-      { title: "Задокументировать /share", completed: false },
+      { title: "List completed features", completed: true },
+      { title: "Add discussion questions", completed: false },
     ],
   },
   {
-    title: "Миграция на новый почтовый сервис",
-    description: "Перевести отправку уведомлений с SendGrid на Resend.",
+    title: "Review the calendar layout",
+    description: "Check the mobile grid, empty states, and the daily task display.",
+    priority: "high",
+    due_date: "2026-04-25",
+    tag: "Design",
+    completed: false,
+    subtasks: [
+      { title: "Check the desktop view", completed: false },
+      { title: "Check the mobile view", completed: false },
+      { title: "Collect notes for the designer", completed: false },
+    ],
+  },
+  {
+    title: "Write the weekly work plan",
+    description: "Break large tasks into short steps and clarify deadlines.",
+    priority: "medium",
+    due_date: "2026-04-26",
+    tag: "Planning",
+    completed: false,
+    subtasks: [
+      { title: "Choose the main goals", completed: false },
+      { title: "Estimate effort", completed: false },
+    ],
+  },
+  {
+    title: "Check the authentication API",
+    description: "Go through registration, login, current user lookup, and logout.",
+    priority: "high",
+    due_date: "2026-04-27",
+    tag: "Backend",
+    completed: false,
+    subtasks: [
+      { title: "Check registration", completed: false },
+      { title: "Check login", completed: false },
+      { title: "Check logout", completed: false },
+    ],
+  },
+  {
+    title: "Update the project setup README",
+    description: "Add environment variables and commands for the client and server.",
     priority: "low",
     due_date: "2026-04-28",
+    tag: "Docs",
+    completed: false,
+    subtasks: [
+      { title: "Document the .env file", completed: false },
+      { title: "Add startup commands", completed: false },
+    ],
+  },
+  {
+    title: "Set up database backups",
+    description: "Agree on the backup schedule and where dumps should be stored.",
+    priority: "medium",
+    due_date: "2026-04-29",
     tag: "Operations",
     completed: false,
     subtasks: [
-      { title: "Зарегистрировать аккаунт Resend", completed: true },
-      { title: "Обновить код отправки", completed: false },
-      { title: "Протестировать на staging", completed: false },
+      { title: "Choose the schedule", completed: false },
+      { title: "Check storage access", completed: false },
     ],
   },
   {
-    title: "Провести 1-on-1 с джуном",
-    description: "Обсудить прогресс за месяц, дать фидбек, обновить план развития.",
+    title: "Collect feedback from testers",
+    description: "Ask QA to run through the new scenarios and document their notes.",
     priority: "medium",
-    due_date: "2026-04-22",
-    tag: "People",
+    due_date: "2026-04-30",
+    tag: "QA",
     completed: false,
     subtasks: [
-      { title: "Подготовить заметки", completed: false },
-      { title: "Провести встречу", completed: false },
+      { title: "Send the scenario list", completed: false },
+      { title: "Collect discovered bugs", completed: false },
     ],
   },
   {
-    title: "Купить лицензию на Figma",
-    description: "",
+    title: "Clean up the deleted task archive",
+    description: "Check that restore works correctly and remove obsolete records.",
     priority: "low",
-    due_date: "2026-04-25",
-    tag: "Finance",
+    due_date: "2026-05-02",
+    tag: "Operations",
     completed: false,
     subtasks: [],
   },
   {
-    title: "Разобрать техдолг в модуле уведомлений",
-    description: "Вынести хардкод, убрать дублирование, добавить логирование ошибок.",
+    title: "Prepare release notes",
+    description: "Briefly describe new features, fixes, and known limitations.",
     priority: "medium",
-    due_date: "2026-04-24",
-    tag: "Frontend",
+    due_date: "2026-05-04",
+    tag: "Docs",
     completed: false,
     subtasks: [
-      { title: "Убрать захардкоженные строки", completed: false },
-      { title: "Вынести общую логику в утилиты", completed: false },
-      { title: "Добавить error logging", completed: false },
+      { title: "List new features", completed: false },
+      { title: "List fixed bugs", completed: false },
     ],
   },
   {
-    title: "Ответить на тикеты в саппорте",
-    description: "Три тикета висят больше суток — нужно разобраться или эскалировать.",
-    priority: "high",
-    due_date: "2026-04-15",
-    tag: "Support",
-    completed: false,
-    subtasks: [
-      { title: "Тикет #301 — проблема с экспортом", completed: false },
-      { title: "Тикет #305 — не приходят письма", completed: false },
-      { title: "Тикет #309 — ошибка 500 при удалении", completed: false },
-    ],
-  },
-  {
-    title: "Настроить мониторинг ошибок",
-    description: "Подключить Sentry к production-серверу и настроить алерты в Slack.",
+    title: "Run the team retrospective",
+    description: "Collect topics, run the meeting, and save the action items.",
     priority: "medium",
-    due_date: "2026-04-26",
-    tag: "Operations",
-    completed: false,
-    subtasks: [
-      { title: "Установить Sentry SDK", completed: false },
-      { title: "Настроить Slack-интеграцию", completed: false },
-    ],
-  },
-  {
-    title: "Закрыть задачи из прошлого спринта",
-    description: "Пройтись по незакрытым задачам, перенести актуальные в текущий спринт, остальные закрыть.",
-    priority: "low",
-    due_date: "2026-04-17",
-    tag: "Planning",
-    completed: true,
-    subtasks: [
-      { title: "Ревью открытых задач", completed: true },
-      { title: "Перенести актуальные", completed: true },
-      { title: "Закрыть неактуальные", completed: true },
-    ],
-  },
-  {
-    title: "Добавить тёмную тему",
-    description: "Реализовать переключатель light/dark и сохранять выбор пользователя в localStorage.",
-    priority: "low",
-    due_date: "2026-05-05",
-    tag: "Frontend",
-    completed: false,
-    subtasks: [
-      { title: "Подготовить CSS-переменные", completed: false },
-      { title: "Добавить toggle в UI", completed: false },
-      { title: "Сохранение в localStorage", completed: false },
-    ],
-  },
-  {
-    title: "Провести ретроспективу спринта",
-    description: "Собрать команду, обсудить что пошло хорошо / плохо, зафиксировать action items.",
-    priority: "medium",
-    due_date: "2026-04-18",
+    due_date: "2026-05-06",
     tag: "Team",
     completed: false,
     subtasks: [
-      { title: "Создать Miro-доску", completed: true },
-      { title: "Провести встречу", completed: false },
-      { title: "Записать action items", completed: false },
+      { title: "Prepare the board", completed: true },
+      { title: "Run the meeting", completed: false },
+      { title: "Write down action items", completed: false },
     ],
   },
   {
-    title: "Бэкап базы данных",
-    description: "Сделать ручной бэкап PostgreSQL перед деплоем новой миграции.",
-    priority: "high",
-    due_date: "2026-04-16",
-    tag: "Operations",
-    completed: true,
+    title: "Start the weekly task report",
+    description: "Check a recurring task for the weekly recurrence demo.",
+    priority: "low",
+    due_date: "2026-05-08",
+    tag: "Reports",
+    completed: false,
+    recurrence: "weekly",
+    recurrence_end_date: "2026-06-26",
     subtasks: [
-      { title: "Запустить pg_dump", completed: true },
-      { title: "Загрузить дамп в S3", completed: true },
+      { title: "Collect metrics", completed: false },
+      { title: "Send the report to the team", completed: false },
+    ],
+  },
+  {
+    title: "Plan the May roadmap",
+    description: "Collect ideas, assess risks, and choose tasks for the next month.",
+    priority: "high",
+    due_date: "2026-05-12",
+    tag: "Roadmap",
+    completed: false,
+    subtasks: [
+      { title: "Collect proposals", completed: false },
+      { title: "Evaluate priorities", completed: false },
+      { title: "Approve the plan", completed: false },
     ],
   },
 ];
 
 async function seed() {
+  let transaction;
+
   try {
     await sequelize.authenticate();
-    console.log("Connected to database.");
-
     await sequelize.sync();
+    await runMigrations(sequelize);
 
-    const existing = await User.findOne({ where: { email: TEST_USER.email } });
+    transaction = await sequelize.transaction();
+
+    const existing = await User.findOne({
+      where: { email: MOCK_USER.email },
+      transaction,
+    });
+
     if (existing) {
-      console.log(`User ${TEST_USER.email} already exists (id=${existing.id}). Aborting.`);
-      process.exit(0);
+      console.log(`User ${MOCK_USER.email} already exists (id=${existing.id}). Aborting.`);
+      await transaction.rollback();
+      transaction = null;
+      return;
     }
 
-    const passwordHash = await bcrypt.hash(TEST_USER.password, 10);
-    const user = await User.create({
-      email: TEST_USER.email,
-      password_hash: passwordHash,
-    });
-    console.log(`Created user: ${user.email} (id=${user.id})`);
+    const passwordHash = await bcrypt.hash(MOCK_USER.password, 10);
+    const user = await User.create(
+      {
+        email: MOCK_USER.email,
+        password_hash: passwordHash,
+      },
+      { transaction }
+    );
 
-    for (const taskData of TASKS) {
+    for (const [index, taskData] of TASKS.entries()) {
       const { subtasks: subtaskList, ...taskFields } = taskData;
-      const task = await Task.create({ ...taskFields, user_id: user.id });
+      const task = await Task.create(
+        {
+          recurrence: "none",
+          recurrence_end_date: null,
+          ...taskFields,
+          position: index,
+          user_id: user.id,
+        },
+        { transaction }
+      );
 
       if (subtaskList.length > 0) {
         await Subtask.bulkCreate(
-          subtaskList.map((s) => ({ ...s, task_id: task.id }))
+          subtaskList.map((subtask) => ({ ...subtask, task_id: task.id })),
+          { transaction }
         );
       }
+
       console.log(`  + ${task.title} (${subtaskList.length} subtasks)`);
     }
 
-    console.log(`\nDone! Created ${TASKS.length} tasks for ${TEST_USER.email}`);
-    console.log(`Login: ${TEST_USER.email} / ${TEST_USER.password}`);
+    await transaction.commit();
+    transaction = null;
+
+    console.log(`\nDone! Created ${TASKS.length} tasks for ${MOCK_USER.email}`);
+    console.log(`Login: ${MOCK_USER.email} / ${MOCK_USER.password}`);
   } catch (err) {
+    if (transaction) {
+      await transaction.rollback();
+    }
+
     console.error("Seed failed:", err);
-    process.exit(1);
+    process.exitCode = 1;
   } finally {
     await sequelize.close();
   }
