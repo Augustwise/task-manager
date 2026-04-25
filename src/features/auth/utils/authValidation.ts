@@ -9,6 +9,7 @@ const passwordSpecialCharacterRegex = new RegExp(
 export function getAuthMessages() {
   return {
     emailInvalid: t("auth.messages.emailInvalid"),
+    passwordRequired: t("auth.messages.passwordRequired"),
     passwordMinLength: t("auth.messages.passwordMinLength", {
       count: authConfig.passwordMinLength,
     }),

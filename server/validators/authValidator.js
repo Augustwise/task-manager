@@ -32,10 +32,15 @@ function hasValidCredentials(email, password) {
   return Boolean(email && password) && isValidEmail(email) && isValidPassword(password);
 }
 
+function hasValidLoginCredentials(email, password) {
+  return Boolean(email && password) && isValidEmail(email);
+}
+
 module.exports = {
   AUTH_MESSAGES: authConfig.messages,
   getCredentialsFromRequest,
   hasValidCredentials,
+  hasValidLoginCredentials,
   isValidEmail,
   isValidPassword,
 };

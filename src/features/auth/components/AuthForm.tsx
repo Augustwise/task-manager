@@ -25,6 +25,7 @@ function AuthForm({ mode, onSubmit }: AuthFormProps) {
   const { t } = useI18n();
   const authMessages = getAuthMessages();
   const passwordRules = getPasswordRules();
+  const shouldShowPasswordRules = mode === "signup";
   const copyByMode: Record<
     AuthFormMode,
     {
@@ -68,13 +69,14 @@ function AuthForm({ mode, onSubmit }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const validation = validateAuthCredentials(email, password);
+  const isPasswordValid = shouldShowPasswordRules ? validation.isPasswordValid : Boolean(password);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setTouched({ email: true, password: true });
     setServerError("");
 
-    if (!validation.isEmailValid || !validation.isPasswordValid) {
+    if (!validation.isEmailValid || !isPasswordValid) {
       return;
     }
 
@@ -91,7 +93,13 @@ function AuthForm({ mode, onSubmit }: AuthFormProps) {
   }
 
   const emailError = touched.email && !validation.isEmailValid;
-  const passwordError = touched.password && !validation.isPasswordValid;
+  const passwordError = touched.password && !isPasswordValid;
+  const passwordHelperText =
+    passwordError && !password
+      ? authMessages.passwordRequired
+      : passwordError && shouldShowPasswordRules
+        ? t("auth.passwordHelper")
+        : " ";
 
   return (
     <>
@@ -136,7 +144,7 @@ function AuthForm({ mode, onSubmit }: AuthFormProps) {
                   disabled={isLoading}
                   error={passwordError}
                   fullWidth
-                  helperText={passwordError ? t("auth.passwordHelper") : " "}
+                  helperText={passwordHelperText}
                   id="password"
                   label={t("common.password")}
                   placeholder={copy.passwordPlaceholder}
@@ -164,20 +172,22 @@ function AuthForm({ mode, onSubmit }: AuthFormProps) {
                   }}
                 />
 
-                <div className="auth-page__password-rules">
-                  <Chip
-                    color={validation.hasMinLength ? "success" : "default"}
-                    label={passwordRules.minLength}
-                    size="small"
-                    variant={validation.hasMinLength ? "filled" : "outlined"}
-                  />
-                  <Chip
-                    color={validation.hasSpecialCharacter ? "success" : "default"}
-                    label={passwordRules.specialCharacter}
-                    size="small"
-                    variant={validation.hasSpecialCharacter ? "filled" : "outlined"}
-                  />
-                </div>
+                {shouldShowPasswordRules && (
+                  <div className="auth-page__password-rules">
+                    <Chip
+                      color={validation.hasMinLength ? "success" : "default"}
+                      label={passwordRules.minLength}
+                      size="small"
+                      variant={validation.hasMinLength ? "filled" : "outlined"}
+                    />
+                    <Chip
+                      color={validation.hasSpecialCharacter ? "success" : "default"}
+                      label={passwordRules.specialCharacter}
+                      size="small"
+                      variant={validation.hasSpecialCharacter ? "filled" : "outlined"}
+                    />
+                  </div>
+                )}
               </div>
 
               <Button disabled={isLoading} size="large" type="submit" variant="contained">

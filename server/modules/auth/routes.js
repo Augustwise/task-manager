@@ -10,6 +10,7 @@ const { requireAuth } = require("../../middleware/requireAuth");
 const {
   getCredentialsFromRequest,
   hasValidCredentials,
+  hasValidLoginCredentials,
 } = require("../../validators/authValidator");
 const { serializeUser } = require("../../utils/serializeUser");
 const {
@@ -62,7 +63,7 @@ router.post("/login", authLimiter, async (req, res) => {
     return res.status(400).json({ errorCode: "missingFields" });
   }
 
-  if (!hasValidCredentials(email, password)) {
+  if (!hasValidLoginCredentials(email, password)) {
     return res.status(400).json({ errorCode: "invalidFormat" });
   }
 

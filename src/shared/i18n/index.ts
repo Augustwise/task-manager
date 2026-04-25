@@ -152,6 +152,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       passwordHelper: "Password must meet both requirements below.",
       messages: {
         emailInvalid: "Please enter a valid email",
+        passwordRequired: "Please enter your password",
         passwordMinLength: "At least {{count}} characters",
         passwordSpecialCharacter: "Minimum 1 special character",
         missingFields: "Email and password are required",
@@ -461,6 +462,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       passwordHelper: "Пароль должен соответствовать обоим требованиям ниже.",
       messages: {
         emailInvalid: "Пожалуйста, введите корректный email",
+        passwordRequired: "Пожалуйста, введите пароль",
         passwordMinLength: "Не менее {{count}} символов",
         passwordSpecialCharacter: "Минимум 1 специальный символ",
         missingFields: "Email и пароль обязательны",
@@ -775,6 +777,7 @@ const resources: Record<SupportedLanguage, TranslationMap> = {
       passwordHelper: "Пароль має відповідати обом вимогам нижче.",
       messages: {
         emailInvalid: "Будь ласка, введіть дійсний email",
+        passwordRequired: "Будь ласка, введіть пароль",
         passwordMinLength: "Щонайменше {{count}} символів",
         passwordSpecialCharacter: "Мінімум 1 спеціальний символ",
         missingFields: "Email і пароль є обов'язковими",
