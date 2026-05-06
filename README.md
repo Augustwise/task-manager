@@ -79,9 +79,11 @@ After that, open `http://localhost:5173` in your browser.
 
 The repository is split into a few main parts:
 
-- `./` contains the frontend app
-- `./server` contains the backend and database connection logic
-- `./shared` contains settings shared by both sides of the project
+| Path | Description |
+|------|-------------|
+| `./` | Frontend app |
+| `./server` | Backend and database connection logic |
+| `./shared` | Settings shared by both sides of the project |
 
 ## Helpful Notes
 
