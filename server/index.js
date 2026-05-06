@@ -1,4 +1,5 @@
 const sequelize = require("./db");
+const { ensureDatabase } = require("./db");
 require("./models/Task");
 require("./models/Subtask");
 const { env } = require("./config/env");
@@ -6,8 +7,8 @@ const { createSessionStore } = require("./config/session");
 const { createApp } = require("./app");
 const { runMigrations } = require("./migrations");
 
-sequelize
-  .authenticate()
+ensureDatabase()
+  .then(() => sequelize.authenticate())
   .then(() => sequelize.sync())
   .then(() => runMigrations(sequelize))
   .then(() => {

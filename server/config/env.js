@@ -21,6 +21,18 @@ function getBoolean(name, fallback = false) {
   return rawValue === "true" || rawValue === "1";
 }
 
+function getRequired(name) {
+  const rawValue = process.env[name];
+  if (rawValue == null || rawValue === "") {
+    throw new Error(
+      `Missing required environment variable: ${name}. ` +
+        `Refusing to start to avoid falling back to the system PostgreSQL defaults. ` +
+        `Set ${name} in your .env file (see .env.example).`
+    );
+  }
+  return rawValue;
+}
+
 function getTrustProxy(name, fallback = false) {
   const rawValue = process.env[name];
 
@@ -56,10 +68,10 @@ const env = {
   trustProxy: getTrustProxy("TRUST_PROXY", false),
   sessionSecret: process.env.SESSION_SECRET || "dev-only-session-secret",
   db: {
-    name: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_HOST,
+    name: getRequired("DB_NAME"),
+    user: getRequired("DB_USER"),
+    password: getRequired("DB_PASSWORD"),
+    host: getRequired("DB_HOST"),
     port: getNumber("DB_PORT", 5432),
     ssl: getBoolean("DB_SSL", false),
   },
