@@ -55,7 +55,7 @@ npm install
 ### 2. Create a `.env` file
 
 Copy `.env.example` in the project root to `.env` and adjust values for your environment.
-The backend reads the PostgreSQL connection from `DATABASE_URL`.
+The backend reads the PostgreSQL connection from `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and `DB_SSL`.
 
 ### 3. Start the backend
 
@@ -87,7 +87,7 @@ The repository is split into a few main parts:
 
 ## Helpful Notes
 
-- The backend reads environment settings from the root `.env` file, including the PostgreSQL `DATABASE_URL`.
+- The backend reads environment settings from the root `.env` file, including the individual PostgreSQL connection variables (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_SSL`).
 - The frontend talks to the backend through `/api` requests during local development.
 - Shared task links are view-only.
 

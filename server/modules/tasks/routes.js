@@ -310,7 +310,7 @@ router.patch("/tasks/:taskId/restore", async (req, res) => {
     }
 
     const task = await findTaskByIdForUser(taskId, req.user.id);
-    if (!task || !task.deleted_at) {
+    if (!task?.deleted_at) {
       return res.status(404).json({ error: "Deleted task not found" });
     }
 

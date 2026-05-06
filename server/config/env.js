@@ -13,6 +13,14 @@ function getNumber(name, fallback) {
   return Number.isNaN(parsedValue) ? fallback : parsedValue;
 }
 
+function getBoolean(name, fallback = false) {
+  const rawValue = process.env[name];
+  if (rawValue == null) {
+    return fallback;
+  }
+  return rawValue === "true" || rawValue === "1";
+}
+
 function getTrustProxy(name, fallback = false) {
   const rawValue = process.env[name];
 
@@ -47,7 +55,14 @@ const env = {
   clientOrigin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
   trustProxy: getTrustProxy("TRUST_PROXY", false),
   sessionSecret: process.env.SESSION_SECRET || "dev-only-session-secret",
-  databaseUrl: process.env.DATABASE_URL,
+  db: {
+    name: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: getNumber("DB_PORT", 5432),
+    ssl: getBoolean("DB_SSL", false),
+  },
 };
 
 module.exports = { env };

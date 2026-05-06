@@ -1,13 +1,19 @@
 const { Sequelize } = require("sequelize");
 const { env } = require("./config/env");
 
-if (!env.databaseUrl) {
-  throw new Error("DATABASE_URL is required to connect to the database.");
-}
-
-const sequelize = new Sequelize(env.databaseUrl, {
-  dialect: "postgres",
-  logging: false,
-});
+const sequelize = new Sequelize(
+  env.db.name,
+  env.db.user,
+  env.db.password,
+  {
+    host: env.db.host,
+    port: env.db.port,
+    dialect: "postgres",
+    dialectOptions: env.db.ssl
+      ? { ssl: { require: true, rejectUnauthorized: false } }
+      : {},
+    logging: false,
+  }
+);
 
 module.exports = sequelize;
