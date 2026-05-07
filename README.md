@@ -30,6 +30,35 @@ With Task Manager, you can:
 - see separate sections for active and completed work
 - generate a share link for a task and remove it when you no longer want to share it
 
+## Project Layout
+
+The repository is split into a few main parts:
+
+| Path | Description |
+|------|-------------|
+| `./` | Frontend app |
+| `./server` | Backend and database connection logic |
+| `./shared` | Settings shared by both sides of the project |
+
+## Helpful Notes
+
+- The backend reads environment settings from the root `.env` file, including the individual PostgreSQL connection variables (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_SSL`).
+- The frontend talks to the backend through `/api` requests during local development.
+- Shared task links are view-only.
+
+## Scripts
+
+From the project root:
+
+- `npm run dev` starts the frontend
+- `npm run build` builds the frontend
+- `npm run lint` checks the frontend code style
+
+From `server/`:
+
+- `npm run dev` starts the backend in development mode
+- `npm start` starts the backend normally
+
 ## Running the Project
 
 If you want to run the app on your computer, you will need:
@@ -74,32 +103,3 @@ npm run dev
 ```
 
 After that, open `http://localhost:5173` in your browser.
-
-## Project Layout
-
-The repository is split into a few main parts:
-
-| Path | Description |
-|------|-------------|
-| `./` | Frontend app |
-| `./server` | Backend and database connection logic |
-| `./shared` | Settings shared by both sides of the project |
-
-## Helpful Notes
-
-- The backend reads environment settings from the root `.env` file, including the individual PostgreSQL connection variables (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_SSL`).
-- The frontend talks to the backend through `/api` requests during local development.
-- Shared task links are view-only.
-
-## Scripts
-
-From the project root:
-
-- `npm run dev` starts the frontend
-- `npm run build` builds the frontend
-- `npm run lint` checks the frontend code style
-
-From `server/`:
-
-- `npm run dev` starts the backend in development mode
-- `npm start` starts the backend normally
