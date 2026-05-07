@@ -282,30 +282,9 @@ function TasksCalendarView({ model }: TasksCalendarViewProps) {
                   aria-pressed={day.isSelected}
                 >
                   <span className="tasks-page__calendar-day-number">{day.dayNumber}</span>
-                  <span className="tasks-page__calendar-day-content">
-                    <span className="tasks-page__calendar-task-preview">
-                      {day.tasks.slice(0, 2).map((task) => (
-                        <span
-                          key={task.id}
-                          className={classNames("tasks-page__calendar-task-pill", {
-                            "tasks-page__calendar-task-pill--completed": task.completed,
-                          })}
-                        >
-                          {task.title}
-                        </span>
-                      ))}
-                      {day.tasks.length > 2 ? (
-                        <span className="tasks-page__calendar-task-more">
-                          {t("tasks.card.moreCount", { count: day.tasks.length - 2 })}
-                        </span>
-                      ) : null}
-                    </span>
-                    {day.tasks.length > 0 ? (
-                      <span className="tasks-page__calendar-task-count">
-                        {t("tasks.calendar.dayTaskCount", { count: day.tasks.length })}
-                      </span>
-                    ) : null}
-                  </span>
+                  {day.tasks.length > 0 ? (
+                    <span className="tasks-page__calendar-task-count">{day.tasks.length}</span>
+                  ) : null}
                 </button>
               ))}
             </div>

@@ -412,45 +412,15 @@
     font-weight: 700;
   }
 
-  &__calendar-day-content,
-  &__calendar-task-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    min-width: 0;
-  }
-
-  &__calendar-day-content {
-    overflow: hidden;
-  }
-
-  &__calendar-task-pill {
-    display: block;
-    padding: 0.3rem 0.45rem;
-    border-radius: radius(card);
-    background: palette(pill-bg);
-    color: palette(pill-text);
-    font-size: 0.72rem;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    &--completed {
-      background: palette(completed-pill-bg);
-      color: palette(completed-pill-text);
-      text-decoration: line-through;
-    }
-  }
-
-  &__calendar-task-more {
-    color: palette(calendar-more);
-    font-size: 0.72rem;
-    font-weight: 700;
-  }
-
   &__calendar-task-count {
-    display: none;
+    @include pill(0.25rem, 0.55rem);
+    align-self: flex-start;
+    margin-top: auto;
+    background: palette(pill-bg);
+    color: palette(pill-count-text);
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1;
   }
 
   &__calendar-panel {

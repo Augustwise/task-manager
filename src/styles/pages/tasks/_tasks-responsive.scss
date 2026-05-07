@@ -64,20 +64,9 @@
       font-size: 0.75rem;
     }
 
-    &__calendar-task-preview {
-      display: none;
-    }
-
     &__calendar-task-count {
       @include pill(0.16rem, 0.38rem);
-      align-self: flex-start;
-      display: inline-flex;
-      margin-top: auto;
-      background: palette(pill-bg);
-      color: palette(pill-count-text);
       font-size: 0.58rem;
-      font-weight: 700;
-      line-height: 1;
     }
   }
 
@@ -271,20 +260,9 @@
       font-size: 0.78rem;
     }
 
-    &__calendar-task-preview {
-      display: none;
-    }
-
     &__calendar-task-count {
       @include pill(0.2rem, 0.45rem);
-      align-self: flex-start;
-      display: inline-flex;
-      margin-top: auto;
-      background: palette(pill-bg);
-      color: palette(pill-count-text);
       font-size: 0.62rem;
-      font-weight: 700;
-      line-height: 1;
     }
 
     &__calendar-actions {
