@@ -7,7 +7,9 @@ const { createSessionStore } = require("./config/session");
 const { createApp } = require("./app");
 const { runMigrations } = require("./migrations");
 
-ensureDatabase()
+const prepareDatabase = env.db.ensureDatabase ? ensureDatabase() : Promise.resolve();
+
+prepareDatabase
   .then(() => sequelize.authenticate())
   .then(() => sequelize.sync())
   .then(() => runMigrations(sequelize))

@@ -74,6 +74,7 @@ const env = {
     host: getRequired("DB_HOST"),
     port: getNumber("DB_PORT", 5432),
     ssl: getBoolean("DB_SSL", false),
+    ensureDatabase: getBoolean("DB_ENSURE", true),
   },
 };
 
